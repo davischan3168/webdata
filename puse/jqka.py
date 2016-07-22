@@ -41,7 +41,7 @@ PY3 = (sys.version_info[0] >= 3)
 
 
 
-def get_current_hu_ths_data():
+def get_current_hu_ths():
     _write_head()
     _write_console()
     try:
@@ -60,7 +60,7 @@ def get_current_hu_ths_data():
         return df
     except Exception as e:
         print(e)    
-def get_current_hongk_ths_data():
+def get_current_hongk_ths():
     _write_head()
     _write_console()
     try:
@@ -124,7 +124,7 @@ def get_finance_index_ths(code):
     except Exception as e:
         print(e)
 
-def get_finance_index_data_simple(code):
+def get_finance_index_simple(code):
     _write_head()
     _write_console()
     try:
@@ -145,7 +145,7 @@ def get_finance_index_data_simple(code):
     except Exception as e:
         print(e)
 
-def get_finance_index_data_year(code):
+def get_finance_index_year(code):
     _write_head()
     _write_console()
     try:
@@ -254,7 +254,7 @@ def get_hk_financial_ths(code):
     except Exception as e:
         print(e)
 
-def get_hk_financial_year_data(code):
+def get_hk_financial_year(code):
     _write_head()
     _write_console()
     try:
