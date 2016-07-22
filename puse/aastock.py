@@ -2,9 +2,9 @@
 """
 基本面数据接口 
 Created on 2015/01/18
-@author: Jimmy Liu
-@group : waditu
-@contact: jimmysoa@sina.cn
+@author: Davis Chan
+@group : Davis-webdata
+@contact: racheal123@163.com
 """
 import pandas as pd
 import sys,os,time
