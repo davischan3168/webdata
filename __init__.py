@@ -128,8 +128,8 @@ from webdata.puse.sina import (get_sina_pepb, get_hangye_sina,
 """
 for jqka data 
 """
-from webdata.puse.jqka import ( get_current_hu_ths_data,
-                                get_current_hongk_ths_data,
+from webdata.puse.jqka import ( get_current_hu_ths,
+                                get_current_hongk_ths,
                                 get_share_cashflow_ths,
                                 get_finance_index_ths,
                                 get_hk_financial_ths)
