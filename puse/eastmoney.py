@@ -378,7 +378,7 @@ def get_ghist_data():
     except Exception as e:
         print(e)
 
-def get_data_hbf_t(date):
+def get_hbf_t(date):
     """
     date format like YYYY-MM,string format.
     """
@@ -415,7 +415,7 @@ def get_data_hbf_t(date):
     DataArr['code']=DataArr['code'].map(lambda x: str(x).zfill(6))
     return DataArr
 
-def get_data_hbf_d(code,date):
+def get_hbf_d(code,date):
     """
     date like YYYY-MM,string format.
     code is the sharecode listed in shanghai or shenzhen
