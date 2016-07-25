@@ -97,8 +97,8 @@ from webdata.puse.eastmoney import (get_currency_data, get_hangye_list,
                                     get_global_index, get_global_index,
                                     get_mainland_index, get_mainland_index,
                                     get_ha_trading_data, get_hhist_data,
-                                    get_ghist_data, get_data_hbf_t,
-                                    get_data_hbf_d)
+                                    get_ghist_data, get_hbf_t,
+                                    get_hbf_d)
 
 """
 for sina data
