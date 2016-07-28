@@ -86,7 +86,8 @@ from webdata.internet.boxoffice import (realtime_boxoffice, day_boxoffice,
 #for person aastock.com
 from webdata.puse.aastock import (get_hk_firatio_data,
                                   get_hk_bsheet_data, get_mainindex_data, 
-                                  get_hk_earsummary_data)
+                                  get_hk_earsummary_data,
+                                  get_hk_divs, summit_for_ipo)
 
 """
 for eastmoney data
@@ -139,6 +140,7 @@ For person app
 """
 from webdata.puse.myapp import ( annlysis_shares_holdbyfund, get_myquandl,
                                  get_myquandl_hdf5, get_history_data_mp,
-                                 get_data_last3year_mp)
+                                 get_data_last3year_mp,
+                                 get_hist_hdf5, get_h_hdf5)
                                   
 
