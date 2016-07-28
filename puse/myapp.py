@@ -208,7 +208,7 @@ def get_h_hdf5(code):
     try:
         dd=h5[label]
         tem=str(dd.index[-1])[0:10]
-        if tem!=today1:
+        if tem!=today:
             if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
                 #print 'Updating the data from%s for %s:'%(tem,code)
                 t=time.strptime(tem,'%Y-%m-%d')
@@ -216,17 +216,18 @@ def get_h_hdf5(code):
                 tt=datetime.datetime(y,m,d)
                 bd=tt+datetime.timedelta(days=1)
                 bday=bd.strftime('%Y-%m-%d')
-                df1=ts.get_h_data(code,start=bday,end=today1)
+                df1=ts.get_h_data(code,start=bday,end=today)
                 df1=df1.sort_index(ascending=True,inplace=True)
-                df=df.append(df1)
+                df=dd.append(df1)
+                df=df.sort_index(ascending=True)
                 h5.append(label,df,data_columns=df.columns)
     except:
         df=ts.get_h_data(code)
+        df=df.sort_index(ascending=True)
         h5.append(label,df,data_columns=df.columns)
-    finally:
-        h5.close()
+    #finally:
+    #    h5.close()
     df.index=pd.to_datetime(df.index)
-    df=df.sort_index(ascending=True)
     return df
 
             
@@ -249,7 +250,7 @@ def get_hist_hdf5(code):
     try:
         dd=h5[label]
         tem=str(dd.index[-1])[0:10]
-        if tem!=today1:
+        if tem!=today:
             if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
                 #print 'Updating the data from%s for %s:'%(tem,code)
                 t=time.strptime(tem,'%Y-%m-%d')
@@ -257,17 +258,17 @@ def get_hist_hdf5(code):
                 tt=datetime.datetime(y,m,d)
                 bd=tt+datetime.timedelta(days=1)
                 bday=bd.strftime('%Y-%m-%d')
-                df1=ts.get_hist_data(code,start=bday,end=today1)
-                df1=df1.sort_index(ascending=True,inplace=True)
-                df=df.append(df1)
+                df1=ts.get_hist_data(code,start=bday,end=today)
+                df=dd.append(df1)
+                df=df.sort_index(ascending=True,inplace=True)
                 h5.append(label,df,data_columns=df.columns)
     except:
         df=ts.get_hist_data(code)
+        df=df.sort_index(ascending=True,inplace=True)                
         h5.append(label,df,data_columns=df.columns)
     #finally:
     #    h5.close()
     df.index=pd.to_datetime(df.index)
-    df=df.sort_index(ascending=True)
     return df
 #get_myquandl("DY4/000001")
 #df=get_myquandl("LLOYDS/BPI")
