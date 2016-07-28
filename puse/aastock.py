@@ -386,3 +386,104 @@ def _get_mainindex_investing(code,dataArr):
         return dataArr
     except Exception as e:
         print(e)
+def _handle_div(r):
+    r=r.text
+    html = lxml.html.parse(StringIO(r))
+    res = html.xpath("//table[@class=\"cnhk-cf tblM s4 s5\"]/tr")
+    if PY3:
+        sarr = [etree.tostring(node).decode('gbk') for node in res]
+    else:
+        sarr = [etree.tostring(node) for node in res]
+    sarr = ''.join(sarr)
+    sarr = '<table>%s</table>'%sarr
+    #print (sarr)
+    df = pd.read_html(sarr)[0]
+    #df=df.drop(0)
+    #df=df.drop(2,axis=1)
+    return df
+def get_hk_divs(code):
+    """
+    Parameters:
+       code:string len is 5
+            code listed in Hongkong Exchange
+    ------------------
+    Return:
+      ----------------
+      DataFrame
+            code,time
+    """
+    code=str(code).zfill(5)
+    url="http://www.aastocks.com/tc/stocks/analysis/company-fundamental/dividend-history?symbol=%s"%code
+    send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                  'Accept-Encoding':'gzip, deflate',
+                  'Accept-Language':'zh,zh-CN;q=0.5',
+                  'Connection':'keep-alive',
+                  'Host':'www.aastocks.com',
+                  'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
+    path='./stockdata/hkstockdata/'+code+'_div.csv'
+    #r=requests.get(url=url,timeout=10,headers=send_headers)
+    r=requests.get(url=url,timeout=10)
+    df=_handle_div(r)
+    df.columns=Div_COls
+    df['code']=code
+    #df=df.set_index('Date')
+    if not os.path.exists(path):
+        df.to_csv(path,index=False)#,encoding='gb18030')#,header=None)
+    else:
+        #df=df.drop(0)
+        df.to_csv(path,header=None,mode='a',index=False)
+    #delect_same_rows(path)
+    return df
+
+def summit_for_ipo(PageNo=10):
+    """
+    从证监会的网站上提取提交ipo预披露和预披露更新的公司信息。
+    Parameters：
+        get PageNo-1 before
+    -------------------------------
+    Return:
+         DataFrame
+            name     公司名称
+            date     披露或更新时间
+            listed  上市地
+            type    披露类型
+    """
+    _write_head()
+    df=pd.DataFrame()
+    for i in range(1,PageNo):
+        try:
+            df1 =  _summit_for_ipo(i,pd.DataFrame())
+            if df is not None:
+                df=df.append(df1)
+            else:
+                break
+        except Exception as e:
+            print (e)
+    df=df.reset_index()
+    df=df.drop('index',axis=1)
+    return df
+
+
+def _summit_for_ipo(PageNo,dataArr):
+    _write_console()
+    try:
+        url='http://ipo.csrc.gov.cn/infoDisplay.action?pageNo=%s&temp=&temp1=&blockType=byTime'%PageNo
+        #print(url)
+        r=requests.get(url)
+        r=r.text
+        text=r
+        html = lxml.html.parse(StringIO(text))
+        res = html.xpath("//table/tr[@class=\"timeborder\"]")
+        if PY3:
+            sarr = [etree.tostring(node).decode('utf8') for node in res]
+        else:
+            sarr = [etree.tostring(node) for node in res]
+        sarr = ''.join(sarr)
+        sarr = '<table>%s</table>'%sarr
+        #print (sarr)
+        df = pd.read_html(sarr)[0]
+        df.columns = ['name','date','listing','type_d','pdf']
+        dataArr = dataArr.append(df, ignore_index=True)
+        return dataArr
+    except Exception as e:
+        print(e)
