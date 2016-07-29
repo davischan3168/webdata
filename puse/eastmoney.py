@@ -10,8 +10,8 @@ try:
     from urllib.request import urlopen, Request
 except ImportError:
     from urllib2 import urlopen, Request
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 DATE_CHK_MSG = '年度输入错误：请输入1989年以后的年份数字，格式：YYYY'
 DATE_CHK_Q_MSG = '季度输入错误：请输入1、2、3或4数字'
 REPORT_COLS=['code','name','preclose','open','close','high','low','Volumn','Change','p_ch','time']
@@ -106,7 +106,7 @@ def get_hangye_list():
     try:
         for i in xrange(1,3,1):
             url="http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?cmd=C._BKHY&type=ct&st=%28BalFlowMain%29&sr=-1&p={0}&ps=50&js=var%20vIlEropE={1}&token=894050c76af8597a853f5b408b759f5d&sty=DCFFITABK&rt=48581414".format(i,'{pages:%28pc%29,data:[%28x%29]}')
-            print url
+            print (url)
             r=requests.get(url)
             r=r.text
             r=_handle_cashflow(r)
@@ -127,7 +127,7 @@ def get_diyu_list():
     try:
         for i in xrange(1,3,1):
             url="http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?cmd=C._BKDY&type=ct&st=%28BalFlowMainNet5%29&sr=-1&p={0}&ps=50&js=var%20WzYQPLmv={1}&token=894050c76af8597a853f5b408b759f5d&sty=DCFFITABK5&rt=48581407".format(i,'{pages:%28pc%29,data:[%28x%29]}')
-            print url
+            print (url)
             r=requests.get(url)
             r=r.text
             r=_handle_cashflow(r)
@@ -148,7 +148,7 @@ def get_gainian_list():
     try:
         for i in xrange(1,3,1):
             url="http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?cmd=C._BKGN&type=ct&st=%28BalFlowMain%29&sr=-1&p={0}&ps=50&js=var%20SVNsQJPa={1}&token=894050c76af8597a853f5b408b759f5d&sty=DCFFITABK&rt=48583857".format(i,'{pages:%28pc%29,data:[%28x%29]}')
-            print url
+            print (url)
             r=requests.get(url)
             r=r.text
             r=_handle_cashflow(r)
@@ -169,7 +169,7 @@ def get_all_list():
     try:
         for i in xrange(1,4,1):
             url="http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx/JS.aspx?type=ct&st=%28BalFlowMain%29&sr=-1&p={0}&ps=1000&js=var%20uywRInNK={1}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA&rt=4858136".format(i,'{pages:%28pc%29,date:%222014-10-22%22,data:[%28x%29]}')
-            print url
+            print (url)
             r=requests.get(url)
             r=r.text
             r=_handle_cashflow(r)
@@ -199,7 +199,7 @@ def get_usa_list():
     try:
         for i in xrange(1,3,1):
             url="http://hq2gjgp.eastmoney.com/EM_Quote2010NumericApplication/Index.aspx?jsName=UsStockJs&dataName=rank&Type=s&style=70&sortType=C&sortRule=-1&page={0}&pageSize=50000&_g=0.297812950635049".format(i)
-            print url
+            print (url)
             r=requests.get(url)
             r=r.text
             r=_handle_usa(r)
@@ -278,7 +278,7 @@ def get_global_index():
     #Darr=pd.DataFrame()
     try:
         url="http://hq2gjgp.eastmoney.com/EM_Quote2010NumericApplication/Index.aspx?reference=rtj&Type=Z&jsName=quote_global&ids=NKY7,KOSPI7,FSSTI7,TWSE7,SENSEX7,JCI7,VNINDEX7,FBMKLC7,SET7,KSE1007,PCOMP7,CSEALL7,AS517,NZSE50FG7,CASE7,INDU7,SPX7,CCMP7,SPTSX7,MEXBOL7,IBOV7,UKX7,DAX7,CAC7,IBEX7,FTSEMIB7,AEX7,SMI7,OMX7,ICEXI7,ISEQ7,INDEXCF7,ASE7,BEL207,LUXXX7,KFX7,HEX7,OBX7,ATX7,WIG7,PX7"
-        print url
+        print (url)
         r=requests.get(url)
         r=r.text
         r=_handle_index(r)
@@ -293,7 +293,7 @@ def get_mainland_index():
     #Darr=pd.DataFrame()
     try:
         url="http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/Index.aspx?type=z&jsName=quote_hs&reference=rtj&ids=0000011,3990012,0003001,3990052,3990062"
-        print url
+        print (url)
         r=requests.get(url)
         r=r.text
         r=_handle_index(r)
@@ -308,7 +308,7 @@ def get_hongkong_index():
     #Darr=pd.DataFrame()
     try:
         url="http://hq2hk.eastmoney.com/EM_Quote2010NumericApplication/Index.aspx?reference=rtj&Type=z&jsName=quote_hk&ids=1100005,1100105,1100305,1100505"
-        print url
+        print (url)
         r=requests.get(url)
         r=r.text
         r=_handle_index(r)
@@ -360,7 +360,7 @@ def get_hhist_data():
     try:
         for i in xrange(1,2,1):
             url="http://datainterface.eastmoney.com/EM_DataCenter/JS.aspx?type=SHT&sty=SHTHPS&st=2&sr=-1&p={0}&ps=30&js=var%20jSKwIjoM={1}&mkt=1&rt=48579990".format(i,'{pages:%28pc%29,data:[%28x%29]}')
-            print url
+            print (url)
             r=requests.get(url)
             df=_handle_hgt(r)
         return df
@@ -371,7 +371,7 @@ def get_ghist_data():
     try:
         for i in xrange(1,2,1):
             url="http://datainterface.eastmoney.com/EM_DataCenter/JS.aspx?type=SHT&sty=SHTHPS&st=2&sr=-1&p={0}&ps=30&js=var%20Zqpsgzqk={1}&mkt=2&rt=48579996".format(i,'{pages:%28pc%29,data:[%28x%29]}')
-            print url
+            print (url)
             r=requests.get(url)
             df=_handle_hgt(r)
         return df
