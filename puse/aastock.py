@@ -43,7 +43,7 @@ def _write_console():
     sys.stdout.flush()
 PY3 = (sys.version_info[0] >= 3)
 def delect_same_rows(fp):
-    print 'update file......'
+    print ('update file......')
     if os.path.exists(fp):
         df=pd.read_csv(fp)#,index_col=0)#,encoding='gbk')
         try:
@@ -377,7 +377,7 @@ def _get_mainindex_investing(code,dataArr):
         else:
             sarr = [etree.tostring(node) for node in res]
         sarr = ''.join(sarr)
-        print sarr
+        #print sarr
         sarr = '<table>%s</table>'%sarr
         df = pd.read_html(sarr)[0]
         df=df.drop(0)
