@@ -14,8 +14,8 @@ try:
     from urllib.request import urlopen, Request
 except ImportError:
     from urllib2 import urlopen, Request
-reload(sys)
-sys.setdefaultencoding('utf8')
+#reload(sys)
+#sys.setdefaultencoding('utf8')
 DATE_CHK_MSG = '年度输入错误：请输入1989年以后的年份数字，格式：YYYY'
 DATE_CHK_Q_MSG = '季度输入错误：请输入1、2、3或4数字'
 REPORT_COLS=['symbol','code','name','trade','pricechange','changepercent','buy','sell','settlement','open','high','low','volume','amount','ticktime','pe',"pe_ttm","nta","pb","mktcap","nmc","turnoverratio"]
@@ -107,7 +107,7 @@ def _handle(r):
     try:
         r.encode('gb18030')
     except Exception as e:
-        print e
+        print (e)
     return r
 
 def get_sina_pepb():
@@ -498,7 +498,7 @@ def _handle_hk_hy(r):
     try:
         r=r.encode('gb18030')
     except Exception as e:
-        print e
+        print (e)
     return r
 
 def get_hk_hangye_trading_sina():
@@ -694,7 +694,7 @@ def get_balance_sheet_sina(code):
     ticker = code
     urlFmt ='http://money.finance.sina.com.cn/corp/go.php/vDOWN_BalanceSheet/displaytype/4/stockid/%s/ctrl/all.phtml'
     url =  urlFmt % ticker
-    print url
+    print (url)
     df = pd.read_csv(url)
     return df
 
@@ -788,7 +788,7 @@ def get_financial_index_sina(code,current_year=datetime.datetime.today().year):
         dataArr=dataArr.set_index('Date')
         return dataArr
     except Exception as e:
-        print '\n',e
+        print ('\n',e)
         return
 #uro
 
@@ -1056,7 +1056,7 @@ def get_ddV(code,unit,date=datetime.datetime.today()):
         df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
         for label in ['price','volume','pre-price']:
             df[label]=df[label].astype(float)  
-        print df.groupby('type').sum()      
+        print (df.groupby('type').sum())
         return df
     except Exception as e:
         print (e)
@@ -1087,7 +1087,7 @@ def get_ddA(code,amount,date=datetime.datetime.today()):
         df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
         for label in ['price','volume','pre-price']:
             df[label]=df[label].astype(float)
-        print df.groupby('type').sum()      
+        print (df.groupby('type').sum())
         return df
     except Exception as e:
         print (e)
@@ -1111,7 +1111,7 @@ def get_ddT(code,amount,date=datetime.datetime.today()):
         df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
         for label in ['price','volume','pre-price']:
             df[label]=df[label].astype(float)
-        print df.groupby('type').sum()
+        print (df.groupby('type').sum())
         return df
     except Exception as e:
         print (e)
@@ -1151,7 +1151,7 @@ def _get_predict(mytype,pageNo, dataArr):
     url='http://vip.stock.finance.sina.com.cn/q/go.php/vPerformancePrediction/kind/%s/index.phtml?num=60&p=%s'%(mytype,pageNo)
     try:
         request = Request(url)
-        print url
+        print (url)
         text = urlopen(request, timeout=10).read()
         text = text.decode('GBK')
         text = text.replace('--', '')
@@ -1215,7 +1215,7 @@ def _get_predict_data_percode(mytype,code,pageNo, dataArr):
     url='http://vip.stock.finance.sina.com.cn/q/go.php/vPerformancePrediction/kind/%s/index.phtml?symbol=%s&num=60&p=%s'%(mytype,code,pageNo)
     try:
         request = Request(url)
-        print url
+        print (url)
         text = urlopen(request, timeout=10).read()
         text = text.decode('GBK')
         text = text.replace('--', '')
