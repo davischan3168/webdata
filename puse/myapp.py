@@ -11,10 +11,6 @@ try:
 except:
     import quandl as Quandl
 import datetime,time
-import webdata.puse.sina as sn
-import webdata.puse.eastmoney as em
-import webdata.puse.aastock as ast
-import webdata.puse.jqka as ths
 token="ALM9oCUNixBCkHwyxJHF"
 today = time.strftime("%Y-%m-%d")
 start_time="2001-01-01"
