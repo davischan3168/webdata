@@ -11,8 +11,8 @@ try:
     from urllib.request import urlopen, Request
 except ImportError:
     from urllib2 import urlopen, Request
-reload(sys)
-sys.setdefaultencoding('gbk')
+#reload(sys)
+#sys.setdefaultencoding('gbk')
 DATE_CHK_MSG = '年度输入错误：请输入1989年以后的年份数字，格式：YYYY'
 DATE_CHK_Q_MSG = '季度输入错误：请输入1、2、3或4数字'
 REPORT_COLS=['date','N_O','Buy','Sell','B_S','Day_balance','T_balance','Name','p_change','code','index','index_pchg']
@@ -183,7 +183,7 @@ def get_share_cashflow_ths():
                       'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
             }
             print(url)
-            print "Get page %s completed"%i
+            print ("Get page %s completed"%i)
             r=requests.get(url,headers=send_headers,timeout=10)
             r=r.text
             text=r
