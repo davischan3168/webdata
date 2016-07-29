@@ -328,7 +328,7 @@ def _handle_hk_ha(r):
     try:
         r=r.encode('utf8')
     except Exception as e:
-        print e
+        print (e)
     return r
 
 def get_ha_trading_data():
