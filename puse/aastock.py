@@ -17,8 +17,8 @@ try:
     from urllib.request import urlopen, Request
 except ImportError:
     from urllib2 import urlopen, Request
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 DATE_CHK_MSG = '年度输入错误：请输入1989年以后的年份数字，格式：YYYY'
 DATE_CHK_Q_MSG = '季度输入错误：请输入1、2、3或4数字'
 TRD_COLS=['symbol','name','engname','tradetype','lasttrade','prevclose','open','high','low','volume','currentvolume','amount','ticktime','buy','sell','high_52week','low_52week','eps','dividend','stocks_sum','pricechange','changepercent']
