@@ -90,7 +90,7 @@ def day_boxoffice(date=None, retry_count=3, pause=0.001):
             request = Request(ct.BOXOFFICE_DAY%(ct.P_TYPE['http'], ct.DOMAINS['mbox'],
                               ct.BOX, date, _random()))
             lines = urlopen(request, timeout = 10).read()
-            print ct.BOXOFFICE_DAY%(ct.P_TYPE['http'], ct.DOMAINS['mbox'],ct.BOX, date, _random())
+            #print ct.BOXOFFICE_DAY%(ct.P_TYPE['http'], ct.DOMAINS['mbox'],ct.BOX, date, _random())
             if len(lines) < 15: #no data
                 return None
         except Exception as e:
@@ -138,8 +138,8 @@ def month_boxoffice(date=None, retry_count=3, pause=0.001):
             request = Request(ct.BOXOFFICE_MONTH%(ct.P_TYPE['http'], ct.DOMAINS['mbox'],
                               ct.BOX, date))
             lines = urlopen(request, timeout = 10).read()
-            print ct.BOXOFFICE_MONTH%(ct.P_TYPE['http'], ct.DOMAINS['mbox'],
-                              ct.BOX, date)
+            #print ct.BOXOFFICE_MONTH%(ct.P_TYPE['http'], ct.DOMAINS['mbox'],
+            #                  ct.BOX, date)
             if len(lines) < 15: #no data
                 return None
         except Exception as e:
