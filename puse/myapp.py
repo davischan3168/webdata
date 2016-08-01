@@ -356,7 +356,7 @@ def get_h_csv(code):
     获取历史复权数据，分为前复权和后复权数据，接口提供股票上市以来所有历史数据，默认为前复权。如果不设定开始和结束日期，则返回近一年的复权数据，从性能上考虑，推荐设定开始日期和结束日期，而且最好不要超过三年以上，获取全部历史数据，请分年段分步获取，取到数据后，请及时在本地存储。
     """
     h5path='./stockdata/data/'+code+'.csv'
-    if os.path.exists(h5path):
+    if not os.path.exists(h5path):
         tem = ts.get_stock_basics()
         date=tem.ix[code]['timeToMarket']
         t=time.strptime(str(date),'%Y%m%d')
@@ -388,7 +388,7 @@ def get_hist_csv(code):
     获取个股历史交易数据（包括均线数据），可以通过参数设置获取日k线、周k线、月k线，以及5分钟、15分钟、30分钟和60分钟k线数据
     """
     h5path='./stockdata/data/'+code'.csv'
-    if os.path.exists(h5path):
+    if not os.path.exists(h5path):
         df=ts.get_hist_data(code)
         if df is not None:
             df.index=pd.to_datetime(df.index)
