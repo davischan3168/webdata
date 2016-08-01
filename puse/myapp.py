@@ -267,6 +267,90 @@ def get_hist_hdf5(code):
     #    h5.close()
     df.index=pd.to_datetime(df.index)
     return df
+
+def get_open_hist_hdf5(code,h5):
+    """
+    获取个股历史交易数据（包括均线数据），可以通过参数设置获取日k线、周k线、月k线，以及5分钟、15分钟、30分钟和60分钟k线数据
+    """
+    if code[0]=='0' or code[0]=='3' or code[0]=='2':
+        label='l3y/sz'+code
+    elif code[0]=='6' or code[0]=='9':
+        label='l3y/ss'+code
+    try:
+        df=h5[label]
+        #print(df)
+        tem=str(df.index[-1])[0:10]
+        if tem<today:
+            if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
+                t=time.strptime(tem,'%Y-%m-%d')
+                y,m,d=t[0:3]
+                tt=datetime.datetime(y,m,d)
+                bd=tt+datetime.timedelta(days=1)
+                bday=bd.strftime('%Y-%m-%d')
+                df1=ts.get_hist_data(code,start=bday,end=today)
+                #print(df1)
+                df=df.append(df1)
+                df.index=pd.to_datetime(df.index)
+                df=df.sort_index(ascending=True)
+                #print(df)
+                h5[label]=df
+    except:
+        df=ts.get_hist_data(code)
+        #print (df)
+        if df is not None:
+            df.index=pd.to_datetime(df.index)
+            df=df.sort_index(ascending=True)
+            h5[label]=df
+    finally:
+        pass
+    return df
+
+def get_open_h_hdf5(code,h5):
+    """
+    获取个股全部历史交易数据
+    """
+    if code[0]=='0' or code[0]=='3' or code[0]=='2':
+        label='M/sz'+code
+    elif code[0]=='6' or code[0]=='9':
+        label='M/ss'+code
+    try:
+        df=h5[label]
+        tem=str(df.index[-1])[0:10]
+        if tem<today:
+            if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
+                t=time.strptime(tem,'%Y-%m-%d')
+                y,m,d=t[0:3]
+                tt=datetime.datetime(y,m,d)
+                bd=tt+datetime.timedelta(days=1)
+                bday=bd.strftime('%Y-%m-%d')
+                df1=ts.get_h_data(code,start=bday,end=today)
+                df=df.append(df1)
+                df.index=pd.to_datetime(df.index)
+                df=df.sort_index(ascending=True)
+                #print(df)
+                h5[label]=df
+    except:
+        tem = ts.get_stock_basics()
+        date=tem.ix[code]['timeToMarket']
+        t=time.strptime(str(date),'%Y%m%d')
+        startt=time.strftime('%Y-%m-%d',t)
+        df=ts.get_h_data(code,start=startt,end=today)
+        if df is not None:
+            df.index=pd.to_datetime(df.index)
+            df=df.sort_index(ascending=True)
+            h5[label]=df
+    finally:
+        pass
+    return df
+
+def open_hdf5():
+    h5path='./testh5df/stockdata.h5'
+    if os.path.exists(h5path):
+        h5 = pd.HDFStore(h5path,'a', complevel=4,complib='blosc')
+    else:
+        h5 = pd.HDFStore(h5path,'w', complevel=4,complib='blosc')
+    return h5
+
 #get_myquandl("DY4/000001")
 #df=get_myquandl("LLOYDS/BPI")
 #df=get_data_last3year('600422')
