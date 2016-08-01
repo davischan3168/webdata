@@ -16,7 +16,7 @@ today = time.strftime("%Y-%m-%d")
 start_time="2001-01-01"
 end_time=today
 bftoday=str(datetime.date.today()-datetime.timedelta(days=1))
-
+import tushare as ts
 def annlysis_shares_holdbyfund(code):
     pf='./stockdata/data/share_hold_by_fund.csv'
     df=pd.read_csv(pf,encoding='gbk',low_memory=False,index_col=0)
@@ -350,6 +350,67 @@ def open_hdf5():
     else:
         h5 = pd.HDFStore(h5path,'w', complevel=4,complib='blosc')
     return h5
+
+def get_h_csv(code):
+    """
+    获取历史复权数据，分为前复权和后复权数据，接口提供股票上市以来所有历史数据，默认为前复权。如果不设定开始和结束日期，则返回近一年的复权数据，从性能上考虑，推荐设定开始日期和结束日期，而且最好不要超过三年以上，获取全部历史数据，请分年段分步获取，取到数据后，请及时在本地存储。
+    """
+    h5path='./stockdata/data/'+code+'.csv'
+    if os.path.exists(h5path):
+        tem = ts.get_stock_basics()
+        date=tem.ix[code]['timeToMarket']
+        t=time.strptime(str(date),'%Y%m%d')
+        startt=time.strftime('%Y-%m-%d',t)
+        df=ts.get_h_data(code,start=startt,end=today)
+        df.index=pd.to_datetime(df.index)
+        df=df.sort_index(ascending=True)
+        df.to_csv(h5path)
+    else:
+        df=pd.read_csv(h5path,index_col='date')
+        tem=str(df.index[-1])[0:10]
+        if tem<today:
+            if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
+                t=time.strptime(tem,'%Y-%m-%d')
+                y,m,d=t[0:3]
+                tt=datetime.datetime(y,m,d)
+                bd=tt+datetime.timedelta(days=1)
+                bday=bd.strftime('%Y-%m-%d')
+                df1=ts.get_h_data(code,start=bday,end=today)
+                if df1 is not None:
+                    df1.index=pd.to_datetime(df1.index)
+                    df1=df1.sort_index(ascending=True)                    
+                    df=df.append(df1)
+                    df1.to_csv(h5path,mode='a',header=None)
+    return df
+
+def get_hist_csv(code):
+    """
+    获取个股历史交易数据（包括均线数据），可以通过参数设置获取日k线、周k线、月k线，以及5分钟、15分钟、30分钟和60分钟k线数据
+    """
+    h5path='./stockdata/data/'+code'.csv'
+    if os.path.exists(h5path):
+        df=ts.get_hist_data(code)
+        if df is not None:
+            df.index=pd.to_datetime(df.index)
+            df=df.sort_index(ascending=True)
+            df.to_csv(h5path)
+    else:
+        df=pd.read_csv(h5path,index_col='date')
+        tem=str(df.index[-1])[0:10]
+        if tem!=today:
+            if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
+                t=time.strptime(tem,'%Y-%m-%d')
+                y,m,d=t[0:3]
+                tt=datetime.datetime(y,m,d)
+                bd=tt+datetime.timedelta(days=1)
+                bday=bd.strftime('%Y-%m-%d')
+                df1=ts.get_hist_data(code,start=str(bday),end=str(today))
+                if df1 is not None:
+                    df1.index=pd.to_datetime(df.index)
+                    df1=df1.sort_index(ascending=True)
+                    df=df.append(df1)
+                    df1.to_csv(h5path,mode='a',header=None)
+    return df
 
 #get_myquandl("DY4/000001")
 #df=get_myquandl("LLOYDS/BPI")
