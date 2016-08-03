@@ -1,10 +1,8 @@
 # -*- coding:utf-8 -*- 
 import pandas as pd
 import numpy as np
-try:
-    import tushare as ts
-except Exception as e:
-    print (e)
+import webdate.stock.trading as wt
+import webdata.stock.fundamental as wf
 import os,sys
 try:
     import Quandl
@@ -330,11 +328,11 @@ def get_open_h_hdf5(code,h5):
                 #print(df)
                 h5[label]=df
     except:
-        tem = ts.get_stock_basics()
+        tem = wf.get_stock_basics()
         date=tem.ix[code]['timeToMarket']
         t=time.strptime(str(date),'%Y%m%d')
         startt=time.strftime('%Y-%m-%d',t)
-        df=ts.get_h_data(code,start=startt,end=today)
+        df=wt.get_h_data(code,start=startt,end=today)
         if df is not None:
             df.index=pd.to_datetime(df.index)
             df=df.sort_index(ascending=True)
@@ -357,11 +355,11 @@ def get_h_csv(code):
     """
     h5path='./stockdata/data/'+code+'.csv'
     if not os.path.exists(h5path):
-        tem = ts.get_stock_basics()
+        tem = wf.get_stock_basics()
         date=tem.ix[code]['timeToMarket']
         t=time.strptime(str(date),'%Y%m%d')
         startt=time.strftime('%Y-%m-%d',t)
-        df=ts.get_h_data(code,start=startt,end=today)
+        df=wt.get_h_data(code,start=startt,end=today)
         df.index=pd.to_datetime(df.index)
         df=df.sort_index(ascending=True)
         df.to_csv(h5path)
@@ -375,7 +373,7 @@ def get_h_csv(code):
                 tt=datetime.datetime(y,m,d)
                 bd=tt+datetime.timedelta(days=1)
                 bday=bd.strftime('%Y-%m-%d')
-                df1=ts.get_h_data(code,start=bday,end=today)
+                df1=wt.get_h_data(code,start=bday,end=today)
                 if df1 is not None:
                     df1.index=pd.to_datetime(df1.index)
                     df1=df1.sort_index(ascending=True)                    
@@ -389,7 +387,7 @@ def get_hist_csv(code):
     """
     h5path='./stockdata/data/'+code'.csv'
     if not os.path.exists(h5path):
-        df=ts.get_hist_data(code)
+        df=wt.get_hist_data(code)
         if df is not None:
             df.index=pd.to_datetime(df.index)
             df=df.sort_index(ascending=True)
@@ -404,7 +402,7 @@ def get_hist_csv(code):
                 tt=datetime.datetime(y,m,d)
                 bd=tt+datetime.timedelta(days=1)
                 bday=bd.strftime('%Y-%m-%d')
-                df1=ts.get_hist_data(code,start=str(bday),end=str(today))
+                df1=wt.get_hist_data(code,start=str(bday),end=str(today))
                 if df1 is not None:
                     df1.index=pd.to_datetime(df.index)
                     df1=df1.sort_index(ascending=True)
