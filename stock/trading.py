@@ -90,7 +90,7 @@ def get_hist_data(code=None, start=None, end=None,
             if (code in ct.INDEX_LABELS) & (ktype in ct.K_MIN_LABELS):
                 df = df.drop('turnover', axis=1)
             df = df.set_index('date')
-            df = df.sort_index(ascending = False)
+            df = df.sort_index(ascending = True)
             return df
     raise IOError(ct.NETWORK_URL_ERROR_MSG)
 
@@ -271,7 +271,7 @@ def _today_ticks(symbol, tdate, pageNo, retry_count, pause):
             sarr = ''.join(sarr)
             sarr = '<table>%s</table>'%sarr
             sarr = sarr.replace('--', '0')
-            df = pd.read_html(StringIO(sarr), parse_dates=False)[0]
+            df = pd.read_html(StringIO(sarr), parse_dates=True)[0]
             df.columns = ct.TODAY_TICK_COLUMNS
             df['pchange'] = df['pchange'].map(lambda x : x.replace('%', ''))
         except Exception as e:
@@ -420,7 +420,7 @@ def get_h_data(code, start=None, end=None, autype='qfq',
     if index:
         data = data[(data.date>=start) & (data.date<=end)]
         data = data.set_index('date')
-        data = data.sort_index(ascending=False)
+        data = data.sort_index(ascending=True)
         return data
     if autype == 'hfq':
         if drop_factor:
@@ -430,7 +430,7 @@ def get_h_data(code, start=None, end=None, autype='qfq',
             data[label] = data[label].map(ct.FORMAT)
             data[label] = data[label].astype(float)
         data = data.set_index('date')
-        data = data.sort_index(ascending = False)
+        data = data.sort_index(ascending = True)
         return data
     else:
         if autype == 'qfq':
@@ -438,7 +438,7 @@ def get_h_data(code, start=None, end=None, autype='qfq',
                 data = data.drop('factor', axis=1)
             df = _parase_fq_factor(code, start, end)
             df = df.drop_duplicates('date')
-            df = df.sort_values(by='date', ascending=False)
+            df = df.sort_values(by='date', ascending=True)
             firstDate = data.head(1)['date']
             frow = df[df.date == firstDate[0]]
             rt = get_realtime_quotes(code)
@@ -462,7 +462,7 @@ def get_h_data(code, start=None, end=None, autype='qfq',
                 data[label] = data[label].map(ct.FORMAT)
                 data[label] = data[label].astype(float)
             data = data.set_index('date')
-            data = data.sort_index(ascending = False)
+            data = data.sort_index(ascending = True)
             return data
         else:
             for label in ['open', 'high', 'close', 'low']:
@@ -473,7 +473,7 @@ def get_h_data(code, start=None, end=None, autype='qfq',
             for label in ['open', 'high', 'close', 'low']:
                 data[label] = data[label].map(ct.FORMAT)
             data = data.set_index('date')
-            data = data.sort_index(ascending = False)
+            data = data.sort_index(ascending = True)
             data = data.astype(float)
             return data
 
