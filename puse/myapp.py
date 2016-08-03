@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*- 
 import pandas as pd
 import numpy as np
-import webdate.stock.trading as wt
+import webdata.stock.trading as wt
 import webdata.stock.fundamental as wf
 import os,sys
 try:
@@ -382,10 +382,12 @@ def get_h_csv(code):
     return df
 
 def get_hist_csv(code):
+    
     """
-    获取个股历史交易数据（包括均线数据），可以通过参数设置获取日k线、周k线、月k线，以及5分钟、15分钟、30分钟和60分钟k线数据
+    获取个股历史交易数据（包括均线数据），可以通过参数设置获取
+    日k线、周k线、月k线，以及5分钟、15分钟、30分钟和60分钟k线数据
     """
-    h5path='./stockdata/data/'+code'.csv'
+    h5path='./stockdata/data/'+code+'.csv'
     if not os.path.exists(h5path):
         df=wt.get_hist_data(code)
         if df is not None:
