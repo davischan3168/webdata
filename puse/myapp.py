@@ -126,19 +126,19 @@ def get_history_data_mp(code):
             #    print 'It is Sat'
             bday=bd.strftime('%Y-%m-%d')
             all_data1 = pd.DataFrame()
-            all_data = ts.get_h_data(code,autype=None,start=bday, end=today)
+            all_data = wt.get_h_data(code,autype=None,start=bday, end=today)
             all_data1 = all_data1.append(all_data)
             if all_data1.empty==False:
                 #print all_data1.head(1)
-                all_data1.sort_index(ascending=True,inplace=True)
+                #all_data1.sort_index(ascending=True,inplace=True)
                 df=ddf.append(all_data1)
                 h5[code]=df
                 return df
     except Exception as e:
         print (e)
         print ('\nDownloading the data %s:'%code)
-        df= ts.get_h_data(code,autype=None,start='2000-01-01', end=today)
-        df.sort_index(ascending=True,inplace=True)
+        df= wt.get_h_data(code,autype=None,start='2000-01-01', end=today)
+        #df.sort_index(ascending=True,inplace=True)
         h5[code]=df
         #h5.close()
         return df
@@ -164,11 +164,11 @@ def get_data_last3year_mp(code):
             bday=bd.strftime('%Y-%m-%d')
             all_data1 = pd.DataFrame()
             try:
-                all_data = ts.get_hist_data(code,start=bday, end=today)
+                all_data = wt.get_hist_data(code,start=bday, end=today)
                 #print all_data
                 all_data1 = all_data1.append(all_data)
                 if all_data1.empty==False:
-                    all_data1.sort_index(ascending=True,inplace=True)
+                    #all_data1.sort_index(ascending=True,inplace=True)
                     df=dff.append(all_data1)
                     #print df
                     h5[code]=df
@@ -179,8 +179,8 @@ def get_data_last3year_mp(code):
     except Exception as e:
         print (e)
         print ('Getting the data for %s: \n'%code)
-        df=ts.get_hist_data(code)
-        df.sort_index(ascending=True,inplace=True)
+        df=wt.get_hist_data(code)
+        #df.sort_index(ascending=True,inplace=True)
         h5[code]=df
         #h5.close()
         return df
@@ -211,14 +211,14 @@ def get_h_hdf5(code):
                 tt=datetime.datetime(y,m,d)
                 bd=tt+datetime.timedelta(days=1)
                 bday=bd.strftime('%Y-%m-%d')
-                df1=ts.get_h_data(code,start=bday,end=today)
-                df1=df1.sort_index(ascending=True,inplace=True)
+                df1=wt.get_h_data(code,start=bday,end=today)
+                #df1=df1.sort_index(ascending=True,inplace=True)
                 df=dd.append(df1)
-                df=df.sort_index(ascending=True)
+                #df=df.sort_index(ascending=True)
                 h5.append(label,df,data_columns=df.columns)
     except:
-        df=ts.get_h_data(code)
-        df=df.sort_index(ascending=True)
+        df=wt.get_h_data(code)
+        #df=df.sort_index(ascending=True)
         h5.append(label,df,data_columns=df.columns)
     #finally:
     #    h5.close()
@@ -253,13 +253,13 @@ def get_hist_hdf5(code):
                 tt=datetime.datetime(y,m,d)
                 bd=tt+datetime.timedelta(days=1)
                 bday=bd.strftime('%Y-%m-%d')
-                df1=ts.get_hist_data(code,start=bday,end=today)
+                df1=wt.get_hist_data(code,start=bday,end=today)
                 df=dd.append(df1)
-                df=df.sort_index(ascending=True,inplace=True)
+                #df=df.sort_index(ascending=True,inplace=True)
                 h5.append(label,df,data_columns=df.columns)
     except:
-        df=ts.get_hist_data(code)
-        df=df.sort_index(ascending=True,inplace=True)                
+        df=wt.get_hist_data(code)
+        #df=df.sort_index(ascending=True,inplace=True)                
         h5.append(label,df,data_columns=df.columns)
     #finally:
     #    h5.close()
@@ -285,19 +285,19 @@ def get_open_hist_hdf5(code,h5):
                 tt=datetime.datetime(y,m,d)
                 bd=tt+datetime.timedelta(days=1)
                 bday=bd.strftime('%Y-%m-%d')
-                df1=ts.get_hist_data(code,start=bday,end=today)
+                df1=wt.get_hist_data(code,start=bday,end=today)
                 #print(df1)
                 df=df.append(df1)
                 df.index=pd.to_datetime(df.index)
-                df=df.sort_index(ascending=True)
+                #df=df.sort_index(ascending=True)
                 #print(df)
                 h5[label]=df
     except:
-        df=ts.get_hist_data(code)
+        df=wt.get_hist_data(code)
         #print (df)
         if df is not None:
-            df.index=pd.to_datetime(df.index)
-            df=df.sort_index(ascending=True)
+            #df.index=pd.to_datetime(df.index)
+            #df=df.sort_index(ascending=True)
             h5[label]=df
     finally:
         pass
@@ -321,10 +321,10 @@ def get_open_h_hdf5(code,h5):
                 tt=datetime.datetime(y,m,d)
                 bd=tt+datetime.timedelta(days=1)
                 bday=bd.strftime('%Y-%m-%d')
-                df1=ts.get_h_data(code,start=bday,end=today)
+                df1=wt.get_h_data(code,start=bday,end=today)
                 df=df.append(df1)
-                df.index=pd.to_datetime(df.index)
-                df=df.sort_index(ascending=True)
+                #df.index=pd.to_datetime(df.index)
+                #df=df.sort_index(ascending=True)
                 #print(df)
                 h5[label]=df
     except:
@@ -334,8 +334,8 @@ def get_open_h_hdf5(code,h5):
         startt=time.strftime('%Y-%m-%d',t)
         df=wt.get_h_data(code,start=startt,end=today)
         if df is not None:
-            df.index=pd.to_datetime(df.index)
-            df=df.sort_index(ascending=True)
+            #df.index=pd.to_datetime(df.index)
+            #df=df.sort_index(ascending=True)
             h5[label]=df
     finally:
         pass
@@ -360,8 +360,8 @@ def get_h_csv(code):
         t=time.strptime(str(date),'%Y%m%d')
         startt=time.strftime('%Y-%m-%d',t)
         df=wt.get_h_data(code,start=startt,end=today)
-        df.index=pd.to_datetime(df.index)
-        df=df.sort_index(ascending=True)
+        #df.index=pd.to_datetime(df.index)
+        #df=df.sort_index(ascending=True)
         df.to_csv(h5path)
     else:
         df=pd.read_csv(h5path,index_col='date')
@@ -375,8 +375,8 @@ def get_h_csv(code):
                 bday=bd.strftime('%Y-%m-%d')
                 df1=wt.get_h_data(code,start=bday,end=today)
                 if df1 is not None:
-                    df1.index=pd.to_datetime(df1.index)
-                    df1=df1.sort_index(ascending=True)                    
+                    #df1.index=pd.to_datetime(df1.index)
+                    #df1=df1.sort_index(ascending=True)                    
                     df=df.append(df1)
                     df1.to_csv(h5path,mode='a',header=None)
     return df
@@ -389,8 +389,8 @@ def get_hist_csv(code):
     if not os.path.exists(h5path):
         df=wt.get_hist_data(code)
         if df is not None:
-            df.index=pd.to_datetime(df.index)
-            df=df.sort_index(ascending=True)
+            #df.index=pd.to_datetime(df.index)
+            #df=df.sort_index(ascending=True)
             df.to_csv(h5path)
     else:
         df=pd.read_csv(h5path,index_col='date')
@@ -404,8 +404,8 @@ def get_hist_csv(code):
                 bday=bd.strftime('%Y-%m-%d')
                 df1=wt.get_hist_data(code,start=str(bday),end=str(today))
                 if df1 is not None:
-                    df1.index=pd.to_datetime(df.index)
-                    df1=df1.sort_index(ascending=True)
+                    #df1.index=pd.to_datetime(df.index)
+                    #df1=df1.sort_index(ascending=True)
                     df=df.append(df1)
                     df1.to_csv(h5path,mode='a',header=None)
     return df
