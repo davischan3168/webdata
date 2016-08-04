@@ -315,6 +315,16 @@ def get_hk_divhis_data(code):
     return df
 
 def get_HSI_index():
+    """
+    get the history data for HSI
+    Parameter:
+        None
+        ---------------------------
+        Return:
+              DataFrame
+                       Data
+                       Open,High,Low,Close,Volume
+    """
     _write_console()
     dataArr=pd.DataFrame()
     try:
@@ -517,7 +527,7 @@ def get_hk_buyback_data(code):
     df=df.reset_index(drop=True)
     return df
 
-def _summit_for_ipoII(PageNo,downl,dataArr):
+def _summit_for_ipoII(PageNo,down,dataArr):
     _write_console()
     try:
         url='http://ipo.csrc.gov.cn/infoDisplay.action?pageNo=%s&temp=&temp1=&blockType=byTime'%PageNo
@@ -534,14 +544,19 @@ def _summit_for_ipoII(PageNo,downl,dataArr):
             purl='%s%s'%('http://ipo.csrc.gov.cn/',td.xpath('td[5]/a/@href')[0])
             co=co.strip()
             data.append([co, date, addr, mtype, purl])
-            if downl:
+            if down:
                 download_file(purl,co+date)
-        df = pd.DataFrame(data,columns=['name','date','addr','type_d','url'])
+        names=['name','date','addr','type_d','url']
+        df = pd.DataFrame(data,columns=names)
+        """
+        for label in names:
+            df[label]=df[label].astype(str)
+        """
         return df
     except Exception as e:
         print(e)
 
-def summit_for_ipoII(n,downl=False):
+def summit_for_ipoII(n=2,down=False):
     """
     从证监会的网站上提取提交ipo预披露和预披露更新的公司信息。
     Parameters：
@@ -561,7 +576,7 @@ def summit_for_ipoII(n,downl=False):
     df=pd.DataFrame()
     for i in range(1,n):
         try:
-            df1 =  _summit_for_ipoII(i,pd.DataFrame())
+            df1 =  _summit_for_ipoII(i,down,pd.DataFrame())
             if df is not None:
                 df=df.append(df1)
         except Exception as e:
