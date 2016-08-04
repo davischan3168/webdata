@@ -87,7 +87,9 @@ from webdata.internet.boxoffice import (realtime_boxoffice, day_boxoffice,
 from webdata.puse.aastock import (get_hk_firatio_data,
                                   get_hk_bsheet_data, get_mainindex_data, 
                                   get_hk_earsummary_data,
-                                  get_hk_divs, summit_for_ipo)
+                                  get_hk_buyback_data,
+                                  get_hk_divs, summit_for_ipo,
+                                  summit_for_ipoII, download_file)
 
 """
 for eastmoney data
