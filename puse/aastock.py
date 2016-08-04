@@ -487,3 +487,104 @@ def _summit_for_ipo(PageNo,dataArr):
         return dataArr
     except Exception as e:
         print(e)
+def get_hk_buyback_data(code):
+    """
+    查询港股的回购情况，前的数据主要是按交易日统计，
+    后半部数据是按月度来统计的。
+    Parameter:
+       code:string XXXXX.like. 08128
+    ------------------------------
+    Return:
+       DataFrame
+          Data
+          Quantity(share)
+          Highest Price
+          Lowest  Price
+    """
+    url="http://www.aastocks.com/en/stocks/analysis/company-fundamental/securities-buyback?symbol=%s"%code
+    send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                  'Accept-Encoding':'gzip, deflate',
+                  'Accept-Language':'zh,zh-CN;q=0.5',
+                  'Connection':'keep-alive',
+                  'DNT':'1',
+                  'Host':'www.aastocks.com',
+                  'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
+    r=requests.get(url=url,timeout=10)
+    df=_handle_div(r)
+    names=df.ix[0]
+    df=df.drop(0,axis=0)
+    df.columns=names
+    df=df.reset_index(drop=True)
+    return df
+
+def _summit_for_ipoII(PageNo,downl,dataArr):
+    _write_console()
+    try:
+        url='http://ipo.csrc.gov.cn/infoDisplay.action?pageNo=%s&temp=&temp1=&blockType=byTime'%PageNo
+        r=requests.get(url)
+        r=r.text
+        html = lxml.html.parse(StringIO(r))
+        res = html.xpath("//table/tr[@class=\"timeborder\"]")
+        data=[]
+        for td in res:
+            co=td.xpath('td[1]/text()')[0].replace('\t','').replace('\r','').replace('\n','')
+            date=td.xpath('td[2]/text()')[0].replace('\t','').replace('\r','').replace('\n','')
+            addr=td.xpath('td[3]/text()')[0].replace('\t','').replace('\r','').replace('\n','')
+            mtype=td.xpath('td[4]/text()')[0].replace('\t','').replace('\r','').replace('\n','')
+            purl='%s%s'%('http://ipo.csrc.gov.cn/',td.xpath('td[5]/a/@href')[0])
+            co=co.strip()
+            data.append([co, date, addr, mtype, purl])
+            if downl:
+                download_file(purl,co+date)
+        df = pd.DataFrame(data,columns=['name','date','addr','type_d','url'])
+        return df
+    except Exception as e:
+        print(e)
+
+def summit_for_ipoII(n,downl=False):
+    """
+    从证监会的网站上提取提交ipo预披露和预披露更新的公司信息。
+    Parameters：
+       n:    get the page 1 to n-1
+       downl:boolen,True or False,if True then download the document,
+                    False,then do not download.
+    -------------------------------
+    Return:
+         DataFrame
+            name     公司名称
+            date     披露或更新时间
+            listed  上市地
+            type    披露类型
+             url    申报文件的url地址 for download document.
+    """
+    _write_head()
+    df=pd.DataFrame()
+    for i in range(1,n):
+        try:
+            df1 =  _summit_for_ipoII(i,pd.DataFrame())
+            if df is not None:
+                df=df.append(df1)
+        except Exception as e:
+            print (e)
+    df=df.reset_index(drop=True)
+    return df
+
+def download_file(url,co): 
+    """
+    从网站上下载文件，需要知道相应的网址，输入另存为的文件名
+    Parameter:
+       url:string, down file url
+       co: string,name for save the files
+    """
+    doc_type=os.path.splitext(url)[-1]
+    local_filename = '../ipo_doc/'+ co+doc_type
+    if not os.path.exists(local_filename):
+        # NOTE the stream=True parameter  
+        r = requests.get(url, stream=True)  
+        with open(local_filename, 'wb') as f:  
+            for chunk in r.iter_content(chunk_size=1024):  
+                if chunk: # filter out keep-alive new chunks  
+                    f.write(chunk)  
+                    f.flush()  
+        print ('Download %s finished'%co)
+    return
