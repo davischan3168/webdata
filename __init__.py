@@ -126,7 +126,9 @@ from webdata.puse.sina import (get_sina_pepb, get_hangye_sina,
                                get_ocean_sina_index, get_realtime_fc_sina,
                                get_hmin_fc, get_hmin_if, get_hday_fc,
                                get_hday_if, get_ddV, get_ddA, get_ddT,
-                               get_predict, get_predict_percode)
+                               get_predict, get_predict_percode,
+                               get_bonus_issue,
+                               get_div)
 
 """
 for jqka data 
