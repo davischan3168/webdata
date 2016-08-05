@@ -171,7 +171,7 @@ def get_share_cashflow_ths():
     _write_console()
     dataArr=pd.DataFrame()
     try:
-        for i in xrange(1,52,1):
+        for i in range(1,52,1):
             url="http://data.10jqka.com.cn/funds/ggzjl/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
             send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                       'Accept-Encoding':'gzip, deflate',
