@@ -104,7 +104,7 @@ def _handle_cashflow(r):
 def get_hangye_list():
     Darr=pd.DataFrame()
     try:
-        for i in xrange(1,3,1):
+        for i in range(1,3,1):
             url="http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?cmd=C._BKHY&type=ct&st=%28BalFlowMain%29&sr=-1&p={0}&ps=50&js=var%20vIlEropE={1}&token=894050c76af8597a853f5b408b759f5d&sty=DCFFITABK&rt=48581414".format(i,'{pages:%28pc%29,data:[%28x%29]}')
             print (url)
             r=requests.get(url)
@@ -125,7 +125,7 @@ def get_hangye_list():
 def get_diyu_list():
     Darr=pd.DataFrame()
     try:
-        for i in xrange(1,3,1):
+        for i in range(1,3,1):
             url="http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?cmd=C._BKDY&type=ct&st=%28BalFlowMainNet5%29&sr=-1&p={0}&ps=50&js=var%20WzYQPLmv={1}&token=894050c76af8597a853f5b408b759f5d&sty=DCFFITABK5&rt=48581407".format(i,'{pages:%28pc%29,data:[%28x%29]}')
             print (url)
             r=requests.get(url)
@@ -146,7 +146,7 @@ def get_diyu_list():
 def get_gainian_list():
     Darr=pd.DataFrame()
     try:
-        for i in xrange(1,3,1):
+        for i in range(1,3,1):
             url="http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?cmd=C._BKGN&type=ct&st=%28BalFlowMain%29&sr=-1&p={0}&ps=50&js=var%20SVNsQJPa={1}&token=894050c76af8597a853f5b408b759f5d&sty=DCFFITABK&rt=48583857".format(i,'{pages:%28pc%29,data:[%28x%29]}')
             print (url)
             r=requests.get(url)
@@ -167,7 +167,7 @@ def get_gainian_list():
 def get_all_list():
     Darr=pd.DataFrame()
     try:
-        for i in xrange(1,4,1):
+        for i in range(1,4,1):
             url="http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx/JS.aspx?type=ct&st=%28BalFlowMain%29&sr=-1&p={0}&ps=1000&js=var%20uywRInNK={1}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA&rt=4858136".format(i,'{pages:%28pc%29,date:%222014-10-22%22,data:[%28x%29]}')
             print (url)
             r=requests.get(url)
@@ -197,7 +197,7 @@ def _handle_usa(r):
 def get_usa_list():
     Darr=pd.DataFrame()
     try:
-        for i in xrange(1,3,1):
+        for i in range(1,3,1):
             url="http://hq2gjgp.eastmoney.com/EM_Quote2010NumericApplication/Index.aspx?jsName=UsStockJs&dataName=rank&Type=s&style=70&sortType=C&sortRule=-1&page={0}&pageSize=50000&_g=0.297812950635049".format(i)
             print (url)
             r=requests.get(url)
@@ -358,7 +358,7 @@ def _handle_hgt(r):
 
 def get_hhist_data():
     try:
-        for i in xrange(1,2,1):
+        for i in range(1,2,1):
             url="http://datainterface.eastmoney.com/EM_DataCenter/JS.aspx?type=SHT&sty=SHTHPS&st=2&sr=-1&p={0}&ps=30&js=var%20jSKwIjoM={1}&mkt=1&rt=48579990".format(i,'{pages:%28pc%29,data:[%28x%29]}')
             print (url)
             r=requests.get(url)
@@ -369,7 +369,7 @@ def get_hhist_data():
         
 def get_ghist_data():
     try:
-        for i in xrange(1,2,1):
+        for i in range(1,2,1):
             url="http://datainterface.eastmoney.com/EM_DataCenter/JS.aspx?type=SHT&sty=SHTHPS&st=2&sr=-1&p={0}&ps=30&js=var%20Zqpsgzqk={1}&mkt=2&rt=48579996".format(i,'{pages:%28pc%29,data:[%28x%29]}')
             print (url)
             r=requests.get(url)
