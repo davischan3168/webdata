@@ -163,7 +163,7 @@ def get_hangye_sina():
          
     """
     dataArr=pd.DataFrame()
-    for i in xrange(1,4,1):
+    for i in range(1,4,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/MoneyFlow.ssl_bkzj_bk?page={0}&num=20&sort=netamount&asc=0&fenlei=0".format(i)
         r=requests.get(url=url)
         r=r.text
@@ -182,7 +182,7 @@ def get_gainian_sina():
           
     """
     dataArr=pd.DataFrame()
-    for i in xrange(1,4,1):
+    for i in range(1,4,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/MoneyFlow.ssl_bkzj_bk?page={0}&num=20&sort=netamount&asc=0&fenlei=1".format(i)
         r=requests.get(url=url)
         r=r.text
@@ -200,7 +200,7 @@ def get_zjh_sina():
     Return
     """
     dataArr=pd.DataFrame()
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/MoneyFlow.ssl_bkzj_bk?page={0}&num=20&sort=netamount&asc=0&fenlei=2".format(i)
         r=requests.get(url=url)
         r=r.text
@@ -263,7 +263,7 @@ def get_share_all_sina():
     Return
     """
     dataArr=pd.DataFrame()
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/MoneyFlow.ssl_bkzj_ssggzj?page={}&num=50000&sort=netamount&asc=0&bankuai=&shichang=".format(i)
         #print url
         r=requests.get(url=url)
@@ -321,7 +321,7 @@ def get_share_percode_sina(code):
         code='sh'+code
     else:
         code='sz'+code
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/MoneyFlow.ssl_qsfx_zjlrqs?page=1&num=20000&sort=opendate&asc=0&daima=%s"%code
         r=requests.get(url=url)
         r=r.text
@@ -381,7 +381,7 @@ def get_hk_trading_sina():
     -------------------
     Return
     """
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHKStockData?page=1&num=40000&sort=symbol&asc=1&node=qbgg_hk&_s_r_a=page"
         r=requests.get(url=url,timeout=10)
         r=r.text
@@ -428,7 +428,7 @@ def get_kzz_trading_sina():
     -----------
     Return
     """
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeDataSimple?page=1&num=40000&sort=symbol&asc=1&node=hskzz_z&_s_r_a=init"
         r=requests.get(url=url,timeout=10)
         r=r.text
@@ -557,7 +557,7 @@ def get_hk_hcg_trading_sina():
     ---------------
     Return
     """
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHKStockData?page=1&num=40000&sort=symbol&asc=1&node=hcg_hk&_s_r_a=init"
         r=requests.get(url=url,timeout=10)
         r=r.text
@@ -611,7 +611,7 @@ def get_hk_gqg_trading_sina():
     -------------------
     Return
     """
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         url="http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHKStockData?page=1&num=4000&sort=symbol&asc=1&node=gqg_hk&_s_r_a=init"
         r=requests.get(url=url,timeout=10)
         r=r.text
@@ -654,7 +654,7 @@ def get_week_zd_sina():
     ------
     Return
     """
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         #print i
         url="http://money.finance.sina.com.cn/quotes_service/api/jsonp_v2.php/IO.XSRV2.CallbackList%5B'dwC2mSZnEdWS48tY'%5D/StatisticsService.getSummaryWeekList?page={0}&num=50000&sort=changes&asc=0&node=adr_hk".format(i)
         r=requests.get(url=url).text
@@ -673,7 +673,7 @@ def get_month_zd_sina():
     ------
     Return
     """
-    for i in xrange(1,2,1):
+    for i in range(1,2,1):
         #print i
         url="http://money.finance.sina.com.cn/quotes_service/api/jsonp_v2.php/IO.XSRV2.CallbackList%5B'z6RpdMbIYp64ChXB'%5D/StatisticsService.getSummaryMonthList?page={0}&num=50000&sort=changes&asc=0&node=adr_hk".format(i)
         r=requests.get(url=url).text
@@ -762,7 +762,7 @@ def get_financial_index_sina(code,current_year=datetime.datetime.today().year):
     _write_head()
     dataArr=pd.DataFrame()
     try:
-        for year in xrange(current_year,1990,-1):
+        for year in range(current_year,1990,-1):
             try:
                 df=_handle_web_fi(code,year)
                 dataArr=dataArr.append(df,ignore_index=True)
@@ -781,7 +781,7 @@ def get_financial_index_sina(code,current_year=datetime.datetime.today().year):
         dataArr=dataArr.reset_index(drop=True)
         dataArr['EPS_Q']=dataArr['EPS_D']-dataArr['EPS_D'].shift(1)
         dataArr_l=dataArr.shape[0]
-        for i in xrange(0,dataArr_l,1):
+        for i in range(0,dataArr_l,1):
             if "03-31" in dataArr.ix[i,'Date']:
                 dataArr.ix[i,'EPS_Q']=dataArr.ix[i,'EPS_D']
                 #print dataArr.ix[i,'Date'],dataArr.ix[i,'EPS_D'],dataArr.ix[i,'EPS_Q']
@@ -1242,3 +1242,79 @@ def _get_predict_data_percode(mytype,code,pageNo, dataArr):
         #"""
     except Exception as e:
         print(e)
+def get_div(code):
+    """
+    获得某只股票的历史分红数据。
+    Parameter:
+        code: String like 600422
+    --------------------------------
+    Return:
+           DataFrame:
+               pdata:分红公告日
+               SG   ：每10股送股数量
+               ZG   ：每10股转股数量
+               div  ：每10股分红金额
+               progress: 进度，已被删除
+               xr_date：  除权除息日
+               book：     股权登记日
+               SZG_date： 红股上市日
+               note：     查看详细，已被删除
+    """
+    url='http://vip.stock.finance.sina.com.cn/corp/go.php/vISSUE_ShareBonus/stockid/%s.phtml'%code
+    r=requests.get(url=url)
+    r=r.content.decode('GBK')
+    html=lxml.html.parse(StringIO(r))
+    res = html.xpath("//table[@id='sharebonus_1']/tbody/tr")
+    if PY3:
+        sarr = [etree.tostring(node).decode('utf-8') for node in res]
+    else:
+        sarr = [etree.tostring(node) for node in res]
+    sarr = ''.join(sarr)
+    #print (sarr)
+    sarr = '<table>%s</table>'%sarr
+    df = pd.read_html(sarr)[0]
+    Adiv_COLS=['pdata','SG','ZG','div','progress','xr_date','book','SZG_date','note']
+    df.columns=Adiv_COLS
+    #df['code']=df['code'].apply(lambda x: x[2::])
+    del df['progress']
+    del df['note']
+    return df
+
+def get_bonus_issue(code):
+    """
+    获得某只股票的历史配股数据。
+    Parameter:
+        code: String like 600422
+    --------------------------------
+    Return:
+           DataFrame:
+               pdata:     分红公告日
+               proposal： 每10股配股数量
+               price:     每股价格（元）
+               basic：    基准股本（万股）
+               xr_date：  除权除息日
+               book：     股权登记日
+               startpay： 缴款起始日
+               endpay：   缴款终止日
+               listday：  红股上市日
+               total：    募集资金合计(元)
+    """
+    url='http://vip.stock.finance.sina.com.cn/corp/go.php/vISSUE_ShareBonus/stockid/%s.phtml'%code
+    r=requests.get(url=url)
+    r=r.content.decode('GBK')
+    html=lxml.html.parse(StringIO(r))
+    res = html.xpath("//table[@id='sharebonus_2']/tbody/tr")
+    if PY3:
+        sarr = [etree.tostring(node).decode('utf-8') for node in res]
+    else:
+        sarr = [etree.tostring(node) for node in res]
+    sarr = ''.join(sarr)
+    #print (sarr)
+    sarr = '<table>%s</table>'%sarr
+    df = pd.read_html(sarr)[0]
+    try:
+        del df[10]
+        df.columns=['pdata','proposal','price','basic','xr_date','book','startpay','endpay','listday','total']
+    except:
+        pass
+    return df
