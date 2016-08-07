@@ -89,7 +89,9 @@ from webdata.puse.aastock import (get_hk_firatio_data,
                                   get_hk_earsummary_data,
                                   get_hk_buyback_data,
                                   get_hk_divs, summit_for_ipo,
-                                  summit_for_ipoII, download_file)
+                                  summit_for_ipoII,
+                                  download_file, all_invest_mainindex,
+                                  all_invest_mainindexII)
 
 """
 for eastmoney data
