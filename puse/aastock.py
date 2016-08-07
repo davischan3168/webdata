@@ -26,7 +26,42 @@ FR_COLS=['Closing_Date','Current_Ratio_Analysis','Capital_Adequacy_(%)','Cost-to
 Div_COls=['Date','Year','Particular','Type','Ex-Date','Book Close Date','Payable Date']
 DATA_GETTING_TIPS = '[Getting data:]'
 DATA_GETTING_FLAG = '#'
-MI={'HSI':'hang-sen-40','DJI':'us-30','SPX':'us-spx-500','IXIC':'nasdaq-composite','GDDAXI':'germany-30','FTSE':'uk-100'}
+MI={'HSI':'hang-sen-40',#香港恒生指数 
+    'DJI':'us-30',#道琼斯工业平均指数 
+    'SPX':'us-spx-500',#美国标准普尔500指数 
+    'IXIC':'nasdaq-composite',#纳斯达克综合指数
+    'GDDAXI':'germany-30',#德国DAX30指数 
+    'FTSE':'uk-100',#英国富时100指数
+    'US2000':'smallcap-2000',#'美国小型股2000 (CFD)'
+    'VIX':'volatility-s-p-500',#'CBOE Volatility Index'
+    'GSPTSE':'s-p-tsx-composite',#'加拿大多伦多S&P/TSX 综合指数'
+    'BVSP':'bovespa',#'巴西IBOVESPA股指'
+    'MXX':'ipc',#'墨西哥IPC指数'
+    'FCHI':'france-40',#'法国CAC40指数 (CFD)'
+    'STOXX50E':'eu-stoxx50',#'欧洲斯托克(Eurostoxx)50指数 (CFD)'
+    'AEX':'netherlands-25',#'荷兰AEX指数 (CFD)'
+    'IBEX':'spain-35',#'西班牙IBEX35指数 (CFD)'
+    'FTMIB':'it-mib-40',#'意大利富时MIB指数 (CFD)'
+    'SSMI':'switzerland-20',#'瑞士SWI20指数 (CFD)'
+    'PSI20':'psi-20',#'葡萄牙PSI20指数 (CFD)'
+    'BFX':'bel-20',#'比利时BEL20指数 (CFD)'
+    'OMXS30':'omx-stockholm-30',#'瑞典OMX斯德哥尔摩30指数'
+    'MCX':'mcx',#'俄罗斯MICEX指数'
+    'IRTS':'rtsi',#'俄罗斯交易系统市值加权指数'
+    'XU100':'ise-100',#'土耳其伊斯坦堡100指数'
+    'TA25':'ta25',#'以色列特拉维夫TA25指数'
+    'TASI':'tasi',#'沙特阿拉伯TASI指数'
+    'N225':'japan-ni225',#'日经225指数'
+    'AXJO':'aus-200',#'澳大利亚S&P/ASX200指数'
+    'FTSE':'ftse-china-a50',#'富时中国A50指数'
+    'DJSH':'dj-shanghai',#'Dow Jones Shanghai'
+    'TWII':'taiwan-weighted',#'台湾加权指数'
+    'KS11':'kospi',#'韩国KOSPI指数'
+    'JKSE':'idx-composite',#'印尼雅加达综合指数'
+    'NSEI':'s-p-cnx-nifty',#'印度S&P CNX NIFTY指数'
+    'BSESN':'sensex',#'印度孟买30指数'
+    'CS':'cse-all-share'#'斯里兰卡科伦坡指数'
+}
 def _check_input(year, quarter):
     if isinstance(year, str) or year < 1989 :
         raise TypeError(DATE_CHK_MSG)
@@ -391,7 +426,7 @@ def _get_mainindex_investing(code,dataArr):
         sarr = '<table>%s</table>'%sarr
         df = pd.read_html(sarr)[0]
         df=df.drop(0)
-        df.columns = REPORT_COLS
+        df.columns = ['Date','Close','Open','High','Low','Volumn','Change']
         dataArr = dataArr.append(df, ignore_index=True)
         return dataArr
     except Exception as e:
@@ -603,3 +638,60 @@ def download_file(url,co):
                     f.flush()  
         print ('Download %s finished'%co)
     return
+def all_invest_mainindex():
+    try:
+        url='http://cn.investing.com/indices/major-indices'
+        r=requests.get(url)
+        text=r.content
+        html = lxml.html.parse(StringIO(text))
+        res = html.xpath("//table[@id=\"cr_12\"]/tbody/tr")
+        if PY3:
+            sarr = [etree.tostring(node).decode('utf-8') for node in res]
+        else:
+            sarr = [etree.tostring(node) for node in res]
+        sarr = ''.join(sarr)
+        #print sarr
+        sarr = '<table>%s</table>'%sarr
+        df = pd.read_html(sarr)[0]
+        #print (df)
+        df=df.drop(0,axis=1)
+        df=df.drop(8,axis=1)
+        df.columns = ['Index','Close','High','Low','Change','Percent','Date']
+        return df
+    except Exception as e:
+        print(e)
+
+def all_invest_mainindexII():
+    try:
+        url='http://cn.investing.com/indices/major-indices'
+        r=requests.get(url)
+        text=r.content
+        html = lxml.html.parse(StringIO(text))
+        res = html.xpath("//table[@id=\"cr_12\"]/tbody/tr")
+        data=[]
+        for td in res:
+            title=td.xpath('td[2]/a/@title')[0]
+            url=td.xpath('td[2]/a/@href')[0]
+            close=td.xpath('td[3]/text()')[0]
+            high=td.xpath('td[4]/text()')[0]
+            low=td.xpath('td[5]/text()')[0]
+            change=td.xpath('td[6]/text()')[0]
+            percent=td.xpath('td[7]/text()')[0]
+            date=td.xpath('td[8]/text()')[0]
+            code=os.path.split(url)[1]
+            url='http://cn.investing.com/indices%s-historical-data'%url
+            """
+            tem=requests.get(url)
+            ttext=tem.content.decode('utf8')
+            thtml = lxml.html.parse(StringIO(ttext))
+            rres=thtml.xpath('//h1/text()')[0]
+            print(rres)
+            #de=re.findall(r'\a+',rres)
+            #print(de)
+            """
+            #print (title)
+            data.append([title,code,close,high,low,change,percent,date,url])
+        df = pd.DataFrame(data,columns=['Index','Code','Close','High','Low','Change','Percent','Date','Url'])
+        return df
+    except Exception as e:
+        print(e)
