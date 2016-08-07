@@ -416,7 +416,7 @@ def _get_mainindex_investing(code,dataArr):
         text = text.replace('月','-')
         text = text.replace('日','')
         html = lxml.html.parse(StringIO(text))
-        res = html.xpath("//table[@id=\"curr_table\"]/*/tr")
+        res = html.xpath("//table[@id=\"curr_table\"]/tbody/tr")
         if PY3:
             sarr = [etree.tostring(node).decode('utf-8') for node in res]
         else:
