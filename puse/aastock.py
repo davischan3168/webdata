@@ -23,7 +23,7 @@ DATE_CHK_MSG = '年度输入错误：请输入1989年以后的年份数字，格
 DATE_CHK_Q_MSG = '季度输入错误：请输入1、2、3或4数字'
 TRD_COLS=['symbol','name','engname','tradetype','lasttrade','prevclose','open','high','low','volume','currentvolume','amount','ticktime','buy','sell','high_52week','low_52week','eps','dividend','stocks_sum','pricechange','changepercent']
 FR_COLS=['Closing_Date','Current_Ratio_Analysis','Capital_Adequacy_(%)','Cost-to-Income_(%)','Liquid_Fund/Deposits_(%)','Trading_Analysis','Loans/Deposits_(%)','Loans/Equity_(X)','Loans/Total_Assets_(%)','Deposits/Equity_(X)','Deposits/Total_Assets_(%)','Return_on_Investment_Analysis','Return_on_Loans_(%)','Return_on_Deposits_(%)','Return_on_Equity_(%)','Return_on_Total_Assets_(%)','Investment_Income_Analysis','Dividend_Payout_(%)','Related_Statistics','Fiscal_Year_High','Fiscal_Year_Low','Fiscal_Year_PER_Range_High_(X)','Fiscal_Year_PER_Range_Low_(X)','Fiscal_Year_Yield_Range_High_(%)','Fiscal_Year_Yield_Range_Low_(%)']
-Div_COls=['Date','Year','Particular','Type','Ex-Date','Book Close Date','Payable Date']
+Div_COls=['Date','Year','Items','Particular','Type','Ex-Date','Book Close Date','Payable Date']
 DATA_GETTING_TIPS = '[Getting data:]'
 DATA_GETTING_FLAG = '#'
 MI={'HSI':'hang-sen-40',#香港恒生指数 
@@ -346,12 +346,16 @@ def get_hk_divhis_data(code):
                   'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
     r=requests.get(url=url,timeout=10)
     df=_handle_div(r)
-    df.columns=Div_COls
+    try:
+        df.columns=Div_COls
+    except:
+        pass
     return df
 
 def get_HSI_index():
     """
-    get the history data for HSI
+    get the history data for HSI from investing.com
+    ----------------------------
     Parameter:
         None
         ---------------------------
@@ -360,12 +364,19 @@ def get_HSI_index():
                        Data
                        Open,High,Low,Close,Volume
     """
+    _write_head()
     _write_console()
     dataArr=pd.DataFrame()
+    send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                  'Accept-Encoding':'gzip, deflate',
+                  'Accept-Language':'zh,zh-CN;q=0.5',
+                  'Connection':'keep-alive',
+                  'DNT':'1',
+                  'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
     try:
         url='http://cn.investing.com/indices/hang-sen-40-historical-data'
         #print(url)
-        r=requests.get(url)
+        r=requests.get(url,headers=send_headers)
         r=r.content
         text=r
         text = text.replace('--', '')
@@ -403,12 +414,20 @@ def get_mainindex_data(code):
     if df is not None:
         #df['code'] = df['code'].map(lambda x:str(x).zfill(6))
         return df
+    
 def _get_mainindex_investing(code,dataArr):
     _write_console()
+    send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                  'Accept-Encoding':'gzip, deflate',
+                  'Accept-Language':'zh,zh-CN;q=0.5',
+                  'Connection':'keep-alive',
+                  'DNT':'1',
+                  'Host':'www.aastocks.com',
+                  'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
     try:
         url='http://cn.investing.com/indices/%s-historical-data'%MI[code]
-        print(url)
-        r=requests.get(url)
+        #print(url)
+        r=requests.get(url,headers=send_headers)
         r=r.content
         text=r
         text = text.replace('--', '')
@@ -448,14 +467,21 @@ def _handle_div(r):
     return df
 def get_hk_divs(code):
     """
+    Get data from aastock.com
+    ------------------------
     Parameters:
-       code:string len is 5
+       code:string len is 5,like 00005
             code listed in Hongkong Exchange
     ------------------
     Return:
       ----------------
       DataFrame
-            code,time
+            P_Date:The data for published the proposal,
+            Year:  In which year and month
+            D_Items: which time?
+            Particular: details for the proposal
+            Type:   cash or share?
+            Ex-Date','Book Close Date','Payable Date'time
     """
     code=str(code).zfill(5)
     url="http://www.aastocks.com/tc/stocks/analysis/company-fundamental/dividend-history?symbol=%s"%code
@@ -465,19 +491,14 @@ def get_hk_divs(code):
                   'Connection':'keep-alive',
                   'Host':'www.aastocks.com',
                   'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
-    path='./stockdata/hkstockdata/'+code+'_div.csv'
     #r=requests.get(url=url,timeout=10,headers=send_headers)
-    r=requests.get(url=url,timeout=10)
+    r=requests.get(url=url,timeout=10,headers=send_headers)
     df=_handle_div(r)
-    df.columns=Div_COls
-    df['code']=code
-    #df=df.set_index('Date')
-    if not os.path.exists(path):
-        df.to_csv(path,index=False)#,encoding='gb18030')#,header=None)
-    else:
-        #df=df.drop(0)
-        df.to_csv(path,header=None,mode='a',index=False)
-    #delect_same_rows(path)
+    try:
+        df.columns=['P_Date','Year','D_Items','Particular','Type','Ex-Date','Book Close Date','Payable Date']
+        df['code']=code
+    except:
+        pass
     return df
 
 def summit_for_ipo(PageNo=10):
@@ -554,7 +575,7 @@ def get_hk_buyback_data(code):
                   'DNT':'1',
                   'Host':'www.aastocks.com',
                   'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
-    r=requests.get(url=url,timeout=10)
+    r=requests.get(url=url,timeout=10,headers=send_headers)
     df=_handle_div(r)
     names=df.ix[0]
     df=df.drop(0,axis=0)
@@ -639,9 +660,19 @@ def download_file(url,co):
         print ('Download %s finished'%co)
     return
 def all_invest_mainindex():
+    """
+    get data of mainindex for close, high, low, change and percent from 
+    investing website
+    """    
+    send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                  'Accept-Encoding':'gzip, deflate',
+                  'Accept-Language':'zh,zh-CN;q=0.5',
+                  'Connection':'keep-alive',
+                  'DNT':'1',
+                  'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
     try:
         url='http://cn.investing.com/indices/major-indices'
-        r=requests.get(url)
+        r=requests.get(url,headers=send_headers)
         text=r.content
         html = lxml.html.parse(StringIO(text))
         res = html.xpath("//table[@id=\"cr_12\"]/tbody/tr")
@@ -662,9 +693,19 @@ def all_invest_mainindex():
         print(e)
 
 def all_invest_mainindexII():
+    """
+    get data of mainindex for close, high, low, change and percent from 
+    investing website
+    """
+    send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                  'Accept-Encoding':'gzip, deflate',
+                  'Accept-Language':'zh,zh-CN;q=0.5',
+                  'Connection':'keep-alive',
+                  'DNT':'1',
+                  'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
     try:
         url='http://cn.investing.com/indices/major-indices'
-        r=requests.get(url)
+        r=requests.get(url,headers=send_headers)
         text=r.content
         html = lxml.html.parse(StringIO(text))
         res = html.xpath("//table[@id=\"cr_12\"]/tbody/tr")
