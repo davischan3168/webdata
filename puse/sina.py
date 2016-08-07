@@ -1318,3 +1318,42 @@ def get_bonus_issue(code):
     except:
         pass
     return df
+def get_news(n):
+    """
+    get news from sina first n pages news
+    --------------
+    Parameter:
+    --------------
+         n:int
+    return:
+    --------------
+        DataFrame: title, url, date
+
+    """
+    for i in range(1,n+1):
+        url='http://roll.finance.sina.com.cn/finance/wh/sjfx/index_%s.shtml'%i
+        r=requests.get(url)
+        text=r.content.decode('GBK')
+        html = lxml.html.parse(StringIO(text))
+        res=html.xpath('//ul[@class=\"list_009\"]/li')
+        data=[]#print (res)
+        for li in res:
+            title=li.xpath('a/text()')[0]
+            url=li.xpath('a/@href')[0]
+            date=li.xpath('span/text()')[0].replace('(','').replace(')','')
+            #get_news_content(url)
+            data.append([title,url,date])
+        df=pd.DataFrame(data,columns=['title','url','date'])
+        return df
+def get_news_content(url):
+    """
+    get news content from sina financial news
+    """
+    html = lxml.html.parse(url)
+    title=html.xpath('//h1[@id=\"artibodyTitle\"]/text()')
+    for line in title:
+        print(line)
+    content=html.xpath('//div[@id=\"artibody\"]/p/text()')
+    for line in content:
+        print(line)
+    return content
