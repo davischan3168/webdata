@@ -6,7 +6,10 @@ import sys,os,json,time
 import lxml.html
 from lxml import etree
 import re,sys,os,requests
-from pandas.compat import StringIO
+try:
+    from io import StringIO
+except:
+    from pandas.compat import StringIO
 try:
     from urllib.request import urlopen, Request
 except ImportError:
