@@ -9,7 +9,10 @@ import re
 import time
 import datetime
 today=time.strftime('%Y-%m-%d')
-from pandas.compat import StringIO
+try:
+    from io import StringIO
+except:
+    from pandas.compat import StringIO
 try:
     from urllib.request import urlopen, Request
 except ImportError:
@@ -1033,7 +1036,7 @@ def get_hday_if(code):
     df=_fcif_handle(r)
     return df
 
-def get_ddV(code,unit,date=datetime.datetime.today()):
+def get_ddV(code,unit=500,date=datetime.datetime.today()):
     """
     获得按成交量统计的大单数据
     --------------
@@ -1051,9 +1054,9 @@ def get_ddV(code,unit,date=datetime.datetime.today()):
         df=pd.read_csv(url,header=None)#,encoding='gb18030')
         df=df.drop(0)
         df.columns=['code','name','time','price','volume','pre-price','type']
-        df.name=df['name'].map(lambda x:str(x).decode('gbk'))
-        df['date']=date
-        df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
+        #df.name=df['name'].map(lambda x:str(x).decode('gbk'))
+        #df['date']=date
+        #df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
         for label in ['price','volume','pre-price']:
             df[label]=df[label].astype(float)  
         print (df.groupby('type').sum())
@@ -1063,7 +1066,7 @@ def get_ddV(code,unit,date=datetime.datetime.today()):
 
         return
 
-def get_ddA(code,amount,date=datetime.datetime.today()):
+def get_ddA(code,amount=50,date=datetime.datetime.today()):
     """
     获得以成交量统计的大单数据
     ------------------
@@ -1082,9 +1085,9 @@ def get_ddA(code,amount,date=datetime.datetime.today()):
         df=pd.read_csv(url,header=None)#,encoding='gb18030')
         df=df.drop(0)
         df.columns=['code','name','time','price','volume','pre-price','type']
-        df.name=df['name'].map(lambda x:str(x).decode('gbk'))
-        df['date']=date
-        df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
+        #df.name=df['name'].map(lambda x:str(x).decode('gbk'))
+        #df['date']=date
+        #df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
         for label in ['price','volume','pre-price']:
             df[label]=df[label].astype(float)
         print (df.groupby('type').sum())
@@ -1092,7 +1095,7 @@ def get_ddA(code,amount,date=datetime.datetime.today()):
     except Exception as e:
         print (e)
 
-def get_ddT(code,amount,date=datetime.datetime.today()):
+def get_ddT(code,amount=1,date=datetime.datetime.today()):
     """
     获得以大单倍数的成交数据
     1 stand for 5(x),2 for 10(X),3 for 20(X),4 for 50(X),5 for 100(X)
@@ -1106,9 +1109,9 @@ def get_ddT(code,amount,date=datetime.datetime.today()):
         df=pd.read_csv(url,header=None)#,encoding='gb18030')
         df=df.drop(0)
         df.columns=['code','name','time','price','volume','pre-price','type']
-        df.name=df['name'].map(lambda x:str(x).decode('gbk'))
-        df['date']=date
-        df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
+        #df.name=df['name'].map(lambda x:str(x).decode('gbk'))
+        #df['date']=date
+        #df['type']=df['type'].map(lambda x:str(x).decode('gbk'))
         for label in ['price','volume','pre-price']:
             df[label]=df[label].astype(float)
         print (df.groupby('type').sum())
