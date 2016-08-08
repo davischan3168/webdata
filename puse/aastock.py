@@ -12,7 +12,10 @@ import lxml.html
 from lxml import etree
 import requests,json
 import re
-from pandas.compat import StringIO
+try:
+    from io import StringIO
+except:
+    from pandas.compat import StringIO
 try:
     from urllib.request import urlopen, Request
 except ImportError:
@@ -336,6 +339,12 @@ def get_hk_earsummary_data(code):
     return df
 
 def get_hk_divhis_data(code):
+    """
+    get data of div for H Share from sina website
+    -----------------
+    code: string zfill(5)
+    
+    """    
     url="http://stock.finance.sina.com.cn/hkstock/dividends/%s.html"%code
     send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                   'Accept-Encoding':'gzip, deflate',
@@ -377,7 +386,7 @@ def get_HSI_index():
         url='http://cn.investing.com/indices/hang-sen-40-historical-data'
         #print(url)
         r=requests.get(url,headers=send_headers)
-        r=r.content
+        r=r.text
         text=r
         text = text.replace('--', '')
         text = text.replace('年','-')
@@ -422,13 +431,12 @@ def _get_mainindex_investing(code,dataArr):
                   'Accept-Language':'zh,zh-CN;q=0.5',
                   'Connection':'keep-alive',
                   'DNT':'1',
-                  'Host':'www.aastocks.com',
                   'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
     try:
         url='http://cn.investing.com/indices/%s-historical-data'%MI[code]
         #print(url)
         r=requests.get(url,headers=send_headers)
-        r=r.content
+        r=r.text
         text=r
         text = text.replace('--', '')
         text = text.replace('年','-')
@@ -446,6 +454,9 @@ def _get_mainindex_investing(code,dataArr):
         df = pd.read_html(sarr)[0]
         df=df.drop(0)
         df.columns = ['Date','Close','Open','High','Low','Volumn','Change']
+        df.Date=pd.to_datetime(df['Date'])
+        df=df.sort_values(by='Date')
+        #df=df.set_index('Date')        
         dataArr = dataArr.append(df, ignore_index=True)
         return dataArr
     except Exception as e:
@@ -673,7 +684,7 @@ def all_invest_mainindex():
     try:
         url='http://cn.investing.com/indices/major-indices'
         r=requests.get(url,headers=send_headers)
-        text=r.content
+        text=r.text
         html = lxml.html.parse(StringIO(text))
         res = html.xpath("//table[@id=\"cr_12\"]/tbody/tr")
         if PY3:
@@ -681,7 +692,6 @@ def all_invest_mainindex():
         else:
             sarr = [etree.tostring(node) for node in res]
         sarr = ''.join(sarr)
-        #print sarr
         sarr = '<table>%s</table>'%sarr
         df = pd.read_html(sarr)[0]
         #print (df)
@@ -706,7 +716,7 @@ def all_invest_mainindexII():
     try:
         url='http://cn.investing.com/indices/major-indices'
         r=requests.get(url,headers=send_headers)
-        text=r.content
+        text=r.text
         html = lxml.html.parse(StringIO(text))
         res = html.xpath("//table[@id=\"cr_12\"]/tbody/tr")
         data=[]
