@@ -9,6 +9,10 @@ try:
 except:
     import quandl as Quandl
 import datetime,time
+try:
+    from io import StringIO
+except:
+    from pandas.compat import StringIO
 token="ALM9oCUNixBCkHwyxJHF"
 today = time.strftime("%Y-%m-%d")
 start_time="2001-01-01"
