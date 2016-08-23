@@ -94,7 +94,7 @@ def _handle(r):
     r=r.replace('false','')
     return r
 def _filter_data_fi(r):
-    r=r.content
+    r=r.text
     r=r.split('"report":',1)[1]
     r=r.split(']]}',1)[0]
     r=r.replace('],','\n')
@@ -213,7 +213,7 @@ def get_share_cashflow_ths():
         print(e)
 
 def _filter_hk_data(r):
-    r=r.content
+    r=r.text
     r=r.split('"report":',1)[1]
     r=r.split(']],"year"',1)[0]
     r=r.replace('],','\n')
@@ -225,7 +225,7 @@ def _filter_hk_data(r):
     return r
 
 def _filter_hk_data1(r):
-    r=r.content
+    r=r.text
     r=r.split(']],"year"',1)[1]
     r=r.replace('],','\n')
     r=r.replace('[','')
