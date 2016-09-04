@@ -464,7 +464,7 @@ def return_for_period(stock_data):
                resample('A', how=lambda x: (x/100+1.0).prod() - 1.0) * 100
     return stock_data
 
-def Make_decision(stock_data):
+def Make_decision(stock_data,code):
     if (stock_data.iloc[-1]['position']==1)&(stock_data.iloc[-2]['position']==1):
         print ('持有这只股票Holding %s.'%code)
     elif (stock_data.iloc[-1]['position']==1)&(stock_data.iloc[-2]['position']==0):
@@ -476,7 +476,7 @@ def Make_decision(stock_data):
     #print '================================================================='
     return
 
-def print_return_next_n_day(dd):
+def print_return_next_n_day(dd,code):
     #print
     print ('历史上这只股票%s出现买入信号的次数为%d，这股票在：'%(code,dd.shape[0]))
     #print
@@ -498,7 +498,7 @@ def return_for_period(stock_data):
                resample('A', how=lambda x: (x/100+1.0).prod() - 1.0) * 100
     return stock_data
 
-def Make_decision(stock_data):
+def Make_decision(stock_data,code):
     if (stock_data.iloc[-1]['position']==1)&(stock_data.iloc[-2]['position']==1):
         print ('持有这只股票Holding %s.'%code)
     elif (stock_data.iloc[-1]['position']==1)&(stock_data.iloc[-2]['position']==0):
@@ -540,7 +540,7 @@ def analysis_kdjv1(code):
     initial_idx = 1
     stock_data['Cash_index'] *= initial_idx
     print ('The KDJ Forwards methon Signal:')
-    Make_decision(stock_data)
+    Make_decision(stock_data,code)
     # 通过复权价格计算接下来几个交易日的收益率
     for n in [1, 2, 3, 5, 10, 20]:
         stock_data['CP_next_'+str(n)+'_days'] =(stock_data['close'].shift(-1*n) / stock_data['close'] - 1.0)
@@ -599,13 +599,13 @@ def tutlemethon(code):
     initial_idx = 1
     index_data['Cash_index'] *= initial_idx
     print ('The turtle methon Signal:')
-    Make_decision(index_data)
+    Make_decision(index_data,code)
     # 通过复权价格计算接下来几个交易日的收益率
     for n in [1, 2, 3, 5, 10, 20]:
         index_data['CP_next_'+str(n)+'_days'] = index_data['close'].shift(-1*n) / index_data['close'] - 1.0
     dd=index_data[index_data['position']==1]
     # 输出数据到指定文件
-    #codedir='./output/A/'+code+os.sep
+    codedir='./output/A/'+code+os.sep
     if not os.path.exists(codedir):
         os.mkdir(codedir)   
     index_data[['date', 'high', 'low', 'close', 'p_change', 'High_Close_Price_N1_Day','Low_Close_Price_N2_Day', 'position', 'Cash_index']].to_csv(codedir+'turtle.csv', index=False, encoding='gbk')
