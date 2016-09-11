@@ -6,7 +6,7 @@
 import os,re
 import sys
 pf=sys.argv[1]
-print (pf)
+#print (pf)
 #fs=os.listdir(pf)
 def write_file(path,r):
     f=open(path,'a')
@@ -15,7 +15,7 @@ def write_file(path,r):
     #f.close()
     #return
 
-    titles='''
+titles='''
 #+TITLE: Change to Name
 #+AUTHOR: Davis Chen
 #+DATE: today
@@ -34,16 +34,25 @@ def write_file(path,r):
 #+TAGS: computer(c) nocomputer(n) either(e)
 #+TAGS: immediately(i) wait(w) action(a)
 '''
-with open('wa.org','w') as f:
+pfname=pf.replace('/','')
+with open(pfname+'_connent.org','w') as f:
     f.writelines(titles)
     f.flush()
 
+def delet_file(pf):
+    for (pf,dirs,files) in os.walk(pf):
+        for old in files:
+            if '_content.txt' in os.path.split(old)[1]:
+                rmfile=os.path.join(pf,old)
+                os.remove(rmfile)
+
+#delet_file(pf)
+
 for (pf,dirs,files) in os.walk(pf):
     for old in files:
-        #new=tem.replace(']',')')
-        #os.rename(pf+'/'+old,pf+'/'+new)
-        filename=os.path.splitext(old)[0]
-        line= '- [ ]  [[./'+pf+'/'+old+']['+filename+']]\n'
-        write_file('wa.org',line)
-        #print (old,new)
-        #"""
+        if (os.path.splitext(old)[1]!='tmp') and \
+        (re.match(r'^~\$',os.path.splitext(old)[0]) is None):
+            #过滤临时文件
+            filename=os.path.splitext(old)[0]
+            line= '- [ ]  [[./'+pf+'/'+old+']['+filename+']]\n'
+            write_file('wa.org',line)
