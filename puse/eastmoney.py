@@ -105,6 +105,9 @@ def _handle_cashflow(r):
     return r
 
 def get_hangye_list():
+    """
+    获取行业的现金流情况
+    """    
     Darr=pd.DataFrame()
     try:
         for i in range(1,3,1):
@@ -126,6 +129,9 @@ def get_hangye_list():
         print(e)
         
 def get_diyu_list():
+    """
+    获取地域的现金流情况
+    """    
     Darr=pd.DataFrame()
     try:
         for i in range(1,3,1):
@@ -147,6 +153,9 @@ def get_diyu_list():
         print(e)
 
 def get_gainian_list():
+    """
+    获取概念的现金流情况
+    """    
     Darr=pd.DataFrame()
     try:
         for i in range(1,3,1):
@@ -168,6 +177,9 @@ def get_gainian_list():
         print(e)
 
 def get_all_list():
+    """
+    获取所有股票的现金流情况
+    """
     Darr=pd.DataFrame()
     try:
         for i in range(1,4,1):
@@ -198,6 +210,9 @@ def _handle_usa(r):
     return r
 
 def get_usa_list():
+    """
+    获取美股股票信息流情况
+    """    
     Darr=pd.DataFrame()
     try:
         for i in range(1,3,1):
@@ -278,6 +293,9 @@ def _hapd(dd):
     return dd
 
 def get_global_index():
+    """
+    获取全球股指数据情况
+    """    
     #Darr=pd.DataFrame()
     try:
         url="http://hq2gjgp.eastmoney.com/EM_Quote2010NumericApplication/Index.aspx?reference=rtj&Type=Z&jsName=quote_global&ids=NKY7,KOSPI7,FSSTI7,TWSE7,SENSEX7,JCI7,VNINDEX7,FBMKLC7,SET7,KSE1007,PCOMP7,CSEALL7,AS517,NZSE50FG7,CASE7,INDU7,SPX7,CCMP7,SPTSX7,MEXBOL7,IBOV7,UKX7,DAX7,CAC7,IBEX7,FTSEMIB7,AEX7,SMI7,OMX7,ICEXI7,ISEQ7,INDEXCF7,ASE7,BEL207,LUXXX7,KFX7,HEX7,OBX7,ATX7,WIG7,PX7"
@@ -293,6 +311,9 @@ def get_global_index():
         print(e)
 
 def get_mainland_index():
+    """
+    获大陆股指情况
+    """    
     #Darr=pd.DataFrame()
     try:
         url="http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/Index.aspx?type=z&jsName=quote_hs&reference=rtj&ids=0000011,3990012,0003001,3990052,3990062"
@@ -441,4 +462,44 @@ def get_hbf_d(code,date):
     df['fcode']=df['fcode'].map(lambda x: str(x).zfill(6))
     for label in ['totals_hbf','tv_hbf','percent_total_shares','percent_current_shares']:
         df[label]=df[label].astype(float)
+    return df
+
+def comp2indu(code):
+    """
+    获取该只股票与行业平均的比较，以明白所选股票在行业中地位
+    Parameter:
+         code: string like 600422
+    Return:
+    -------------------
+         DataFrame:
+             Item:
+             T_V:总资产
+             N_A：净资产
+             N_P：净利润
+             PE：市盈率
+             PB：市净率
+             Gross：毛利率
+             N_PR：净利率
+             ROE：净资产收益率
+         
+    """
+    if code[0]=='6' or code=='9':
+        code='sh'+code
+    else:
+        code='sz'+code
+    url='http://quote.eastmoney.com/%s.html'%code
+    r=requests.get(url=url)
+    u=r.content.decode('GBK')
+    html=lxml.html.parse(StringIO(u))
+    res = html.xpath("//div[@class=\"cwzb\"]/table/tbody/tr")
+    if PY3:
+        sarr = [etree.tostring(node).decode('gb18030') for node in res]
+    else:
+        sarr = [etree.tostring(node) for node in res]
+    sarr = ''.join(sarr)
+    sarr = '<table>%s</table>'%sarr
+    df = pd.read_html(sarr)[0]
+    df=df.drop(3)
+    names=['Item','T_V','N_A','N_P','PE','PB','Gross','N_PR','ROE']
+    df.columns=names
     return df

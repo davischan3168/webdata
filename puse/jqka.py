@@ -169,12 +169,12 @@ def get_finance_index_year(code):
     except Exception as e:
         print(e)
 
-def get_share_cashflow_ths():
+def get_cashflow_thsnow():
     _write_head()
-    _write_console()
     dataArr=pd.DataFrame()
     try:
-        for i in range(1,52,1):
+        for i in range(1,55,1):
+            _write_console()
             url="http://data.10jqka.com.cn/funds/ggzjl/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
             send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                       'Accept-Encoding':'gzip, deflate',
@@ -185,13 +185,13 @@ def get_share_cashflow_ths():
                       'Referer':'http://www.10jqka.com.cn/',
                       'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
             }
-            print(url)
-            print ("Get page %s completed"%i)
+            #print(url)
+            #print ("Get page %s completed"%i)
             r=requests.get(url,headers=send_headers,timeout=10)
             r=r.text
             text=r
             html = lxml.html.parse(StringIO(text))
-            res = html.xpath("//table/*/tr")
+            res = html.xpath("//table/tbody/tr")
             if PY3:
                 sarr = [etree.tostring(node).decode('utf-8') for node in res]
             else:
@@ -200,7 +200,7 @@ def get_share_cashflow_ths():
             #print sarr
             sarr = '<table>%s</table>'%sarr
             df = pd.read_html(sarr)[0]
-            df=df.drop(0)
+            #df=df.drop(0)
             df = df.drop(0, axis=1)
             df.columns = REPORT_cash
             dataArr = dataArr.append(df, ignore_index=True)
@@ -212,6 +212,162 @@ def get_share_cashflow_ths():
     except Exception as e:
         print(e)
 
+def get_cashflow_ths3days():
+    _write_head()
+    dataArr=pd.DataFrame()
+    try:
+        for i in range(1,55,1):
+            _write_console()
+            url="http://data.10jqka.com.cn/funds/ggzjl/board/3/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
+            send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                      'Accept-Encoding':'gzip, deflate',
+                      'Accept-Language':'zh,zh-CN;q=0.5',
+                      'Connection':'keep-alive',
+                      'DNT':'1',
+                      'Host':'data.10jqka.com.cn',
+                      'Referer':'http://www.10jqka.com.cn/',
+                      'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
+            }
+            r=requests.get(url,headers=send_headers,timeout=10)
+            r=r.text
+            text=r
+            html = lxml.html.parse(StringIO(text))
+            res = html.xpath("//table/tbody/tr")
+            if PY3:
+                sarr = [etree.tostring(node).decode('utf-8') for node in res]
+            else:
+                sarr = [etree.tostring(node) for node in res]
+            sarr = ''.join(sarr)
+            sarr = '<table>%s</table>'%sarr
+            df = pd.read_html(sarr)[0]
+            df = df.drop(0, axis=1)
+            time.sleep(0.01)
+        if dataArr is not None:
+            df.columns = ['code','name','price','percent_period','turn_over','net_income']
+            dataArr = dataArr.append(df, ignore_index=True)
+            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+            dataArr=dataArr.set_index('code')
+        return dataArr
+    except Exception as e:
+        print(e)
+
+def get_cashflow_ths5days():
+    _write_head()
+    dataArr=pd.DataFrame()
+    try:
+        for i in range(1,55,1):
+            _write_console()
+            url="http://data.10jqka.com.cn/funds/ggzjl/board/5/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
+            send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                      'Accept-Encoding':'gzip, deflate',
+                      'Accept-Language':'zh,zh-CN;q=0.5',
+                      'Connection':'keep-alive',
+                      'DNT':'1',
+                      'Host':'data.10jqka.com.cn',
+                      'Referer':'http://www.10jqka.com.cn/',
+                      'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
+            }
+            r=requests.get(url,headers=send_headers,timeout=10)
+            r=r.text
+            text=r
+            html = lxml.html.parse(StringIO(text))
+            res = html.xpath("//table/tbody/tr")
+            if PY3:
+                sarr = [etree.tostring(node).decode('utf-8') for node in res]
+            else:
+                sarr = [etree.tostring(node) for node in res]
+            sarr = ''.join(sarr)
+            sarr = '<table>%s</table>'%sarr
+            df = pd.read_html(sarr)[0]
+            df = df.drop(0, axis=1)
+            time.sleep(0.01)
+        if dataArr is not None:
+            df.columns = ['code','name','price','percent_period','turn_over','net_income']
+            dataArr = dataArr.append(df, ignore_index=True)
+            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+            dataArr=dataArr.set_index('code')
+        return dataArr
+    except Exception as e:
+        print(e)
+
+def get_cashflow_ths10days():
+    _write_head()
+    dataArr=pd.DataFrame()
+    try:
+        for i in range(1,55,1):
+            _write_console()
+            url="http://data.10jqka.com.cn/funds/ggzjl/board/10/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
+            send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                      'Accept-Encoding':'gzip, deflate',
+                      'Accept-Language':'zh,zh-CN;q=0.5',
+                      'Connection':'keep-alive',
+                      'DNT':'1',
+                      'Host':'data.10jqka.com.cn',
+                      'Referer':'http://www.10jqka.com.cn/',
+                      'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
+            }
+            r=requests.get(url,headers=send_headers,timeout=10)
+            r=r.text
+            text=r
+            html = lxml.html.parse(StringIO(text))
+            res = html.xpath("//table/tbody/tr")
+            if PY3:
+                sarr = [etree.tostring(node).decode('utf-8') for node in res]
+            else:
+                sarr = [etree.tostring(node) for node in res]
+            sarr = ''.join(sarr)
+            sarr = '<table>%s</table>'%sarr
+            df = pd.read_html(sarr)[0]
+            df = df.drop(0, axis=1)
+            time.sleep(0.01)
+        if dataArr is not None:
+            df.columns = ['code','name','price','percent_period','turn_over','net_income']
+            dataArr = dataArr.append(df, ignore_index=True)
+            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+            dataArr=dataArr.set_index('code')
+        return dataArr
+    except Exception as e:
+        print(e)
+
+def get_cashflow_ths20days():
+    _write_head()
+    dataArr=pd.DataFrame()
+    try:
+        for i in range(1,55,1):
+            _write_console()
+            url="http://data.10jqka.com.cn/funds/ggzjl/board/20/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
+            send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                      'Accept-Encoding':'gzip, deflate',
+                      'Accept-Language':'zh,zh-CN;q=0.5',
+                      'Connection':'keep-alive',
+                      'DNT':'1',
+                      'Host':'data.10jqka.com.cn',
+                      'Referer':'http://www.10jqka.com.cn/',
+                      'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
+            }
+            r=requests.get(url,headers=send_headers,timeout=10)
+            r=r.text
+            text=r
+            html = lxml.html.parse(StringIO(text))
+            res = html.xpath("//table/tbody/tr")
+            if PY3:
+                sarr = [etree.tostring(node).decode('utf-8') for node in res]
+            else:
+                sarr = [etree.tostring(node) for node in res]
+            sarr = ''.join(sarr)
+            sarr = '<table>%s</table>'%sarr
+            df = pd.read_html(sarr)[0]
+            df = df.drop(0, axis=1)
+            time.sleep(0.01)
+        if dataArr is not None:
+            df.columns = ['code','name','price','percent_period','turn_over','net_income']
+            dataArr = dataArr.append(df, ignore_index=True)
+            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+            dataArr=dataArr.set_index('code')
+        return dataArr
+    except Exception as e:
+        print(e)
+        
 def _filter_hk_data(r):
     r=r.text
     r=r.split('"report":',1)[1]

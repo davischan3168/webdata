@@ -1,8 +1,12 @@
 # -*- coding:utf-8 -*- 
 import pandas as pd
+pd.set_option("mode.use_inf_as_null",True)
 import numpy as np
 import webdata.stock.trading as wt
 import webdata.stock.fundamental as wf
+import statsmodels.api as sm
+from statsmodels.sandbox.regression.predstd import wls_prediction_std
+#import tushare as ts
 import os,sys
 try:
     import Quandl
@@ -18,7 +22,7 @@ today = time.strftime("%Y-%m-%d")
 start_time="2001-01-01"
 end_time=today
 bftoday=str(datetime.date.today()-datetime.timedelta(days=1))
-import tushare as ts
+#import tushare as ts
 def annlysis_shares_holdbyfund(code):
     pf='./stockdata/data/share_hold_by_fund.csv'
     df=pd.read_csv(pf,encoding='gbk',low_memory=False,index_col=0)
@@ -283,19 +287,19 @@ def get_open_hist_hdf5(code,h5):
         #print(df)
         tem=str(df.index[-1])[0:10]
         if tem<today:
-            if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
-                t=time.strptime(tem,'%Y-%m-%d')
-                y,m,d=t[0:3]
-                tt=datetime.datetime(y,m,d)
-                bd=tt+datetime.timedelta(days=1)
-                bday=bd.strftime('%Y-%m-%d')
-                df1=wt.get_hist_data(code,start=bday,end=today)
-                #print(df1)
-                df=df.append(df1)
-                df.index=pd.to_datetime(df.index)
-                #df=df.sort_index(ascending=True)
-                #print(df)
-                h5[label]=df
+            #if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
+            t=time.strptime(tem,'%Y-%m-%d')
+            y,m,d=t[0:3]
+            tt=datetime.datetime(y,m,d)
+            bd=tt+datetime.timedelta(days=1)
+            bday=bd.strftime('%Y-%m-%d')
+            df1=wt.get_hist_data(code,start=bday,end=today)
+            #print(df1)
+            df=df.append(df1)
+            df.index=pd.to_datetime(df.index)
+            #df=df.sort_index(ascending=True)
+            #print(df)
+            h5[label]=df
     except:
         df=wt.get_hist_data(code)
         #print (df)
@@ -319,18 +323,18 @@ def get_open_h_hdf5(code,h5):
         df=h5[label]
         tem=str(df.index[-1])[0:10]
         if tem<today:
-            if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
-                t=time.strptime(tem,'%Y-%m-%d')
-                y,m,d=t[0:3]
-                tt=datetime.datetime(y,m,d)
-                bd=tt+datetime.timedelta(days=1)
-                bday=bd.strftime('%Y-%m-%d')
-                df1=wt.get_h_data(code,start=bday,end=today)
-                df=df.append(df1)
-                #df.index=pd.to_datetime(df.index)
-                #df=df.sort_index(ascending=True)
-                #print(df)
-                h5[label]=df
+            #if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
+            t=time.strptime(tem,'%Y-%m-%d')
+            y,m,d=t[0:3]
+            tt=datetime.datetime(y,m,d)
+            bd=tt+datetime.timedelta(days=1)
+            bday=bd.strftime('%Y-%m-%d')
+            df1=wt.get_h_data(code,start=bday,end=today)
+            df=df.append(df1)
+            #df.index=pd.to_datetime(df.index)
+            #df=df.sort_index(ascending=True)
+            #print(df)
+            h5[label]=df
     except:
         tem = wf.get_stock_basics()
         date=tem.ix[code]['timeToMarket']
@@ -369,7 +373,8 @@ def get_h_csv(code,index=False,autype='qfq'):
             tick='SZ_'+code
         fn='./stockdata/data/history/'+tick+'.csv'
         if not os.path.exists(fn):
-            df=wt.get_h_data(code,index=True,start='2000-01-01',end=today)
+            df=wt.get_h_data(code,index=True,start='1995-01-01',end=today)
+            df=df.sort_index(ascending=True)
             df.to_csv(fn)
         else:
             df=pd.read_csv(fn,index_col='date')
@@ -384,7 +389,7 @@ def get_h_csv(code,index=False,autype='qfq'):
                 if bd.weekday()==5:
                     bd = bd+datetime.timedelta(days=2)
                 bday=bd.strftime('%Y-%m-%d')
-                all_data = ts.get_h_data(code,index=True,start=bday, end=today)
+                all_data = wt.get_h_data(code,index=True,start=bday, end=today)
                 if all_data is not None:
                     all_data.to_csv(fn, header=None, mode='a')
                     df=df.append(all_data)
@@ -401,16 +406,16 @@ def get_h_csv(code,index=False,autype='qfq'):
             df=pd.read_csv(h5path,index_col='date')
             tem=str(df.index[-1])[0:10]
             if tem<today:
-                if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
-                    t=time.strptime(tem,'%Y-%m-%d')
-                    y,m,d=t[0:3]
-                    tt=datetime.datetime(y,m,d)
-                    bd=tt+datetime.timedelta(days=1)
-                    bday=bd.strftime('%Y-%m-%d')
-                    df1=wt.get_h_data(code,autype=autype,start=bday,end=today)
-                    if df1 is not None:
-                        df=df.append(df1)
-                        df1.to_csv(h5path,mode='a',header=None)
+                #if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
+                t=time.strptime(tem,'%Y-%m-%d')
+                y,m,d=t[0:3]
+                tt=datetime.datetime(y,m,d)
+                bd=tt+datetime.timedelta(days=1)
+                bday=bd.strftime('%Y-%m-%d')
+                df1=wt.get_h_data(code,autype=autype,start=bday,end=today)
+                if df1 is not None:
+                    df=df.append(df1)
+                    df1.to_csv(h5path,mode='a',header=None)
     return df
 
 def get_hist_csv(code):
@@ -430,18 +435,18 @@ def get_hist_csv(code):
         df=pd.read_csv(h5path,index_col='date')
         tem=str(df.index[-1])[0:10]
         if tem!=today:
-            if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
-                t=time.strptime(tem,'%Y-%m-%d')
-                y,m,d=t[0:3]
-                tt=datetime.datetime(y,m,d)
-                bd=tt+datetime.timedelta(days=1)
-                bday=bd.strftime('%Y-%m-%d')
-                df1=wt.get_hist_data(code,start=str(bday),end=str(today))
-                if df1 is not None:
-                    #df1.index=pd.to_datetime(df.index)
-                    #df1=df1.sort_index(ascending=True)
-                    df=df.append(df1)
-                    df1.to_csv(h5path,mode='a',header=None)
+            #if datetime.datetime.today().isoweekday() in [1,2,3,4,5]:
+            t=time.strptime(tem,'%Y-%m-%d')
+            y,m,d=t[0:3]
+            tt=datetime.datetime(y,m,d)
+            bd=tt+datetime.timedelta(days=1)
+            bday=bd.strftime('%Y-%m-%d')
+            df1=wt.get_hist_data(code,start=str(bday),end=str(today))
+            if df1 is not None:
+                #df1.index=pd.to_datetime(df.index)
+                #df1=df1.sort_index(ascending=True)
+                df=df.append(df1)
+                df1.to_csv(h5path,mode='a',header=None)
     return df
 
 def print_return_next_n_day(dd):
@@ -513,6 +518,7 @@ def Make_decision(stock_data,code):
 
 def analysis_kdjv1(code):
     filename='./stockdata/data/last3year/'+code+'.csv'
+    get_hist_csv(code)
     stock_dataT = pd.read_csv(filename, parse_dates=['date'],encoding='gbk')
     stock_data=stock_dataT.loc[:,('date', 'high', 'low', 'close', 'p_change')].copy()
     # 计算KDJ指标
@@ -563,6 +569,7 @@ def analysis_kdjv1(code):
 
 def tutlemethon(code):
     filename='./stockdata/data/last3year/'+code+'.csv'
+    get_hist_csv(code)
     #    if len(code)==6:
     index_data = pd.read_csv(filename, parse_dates=['date'])
     # 保留这几个需要的字段：'date', 'high', 'low', 'close', 'change'
@@ -616,4 +623,131 @@ def tutlemethon(code):
     year_rtn = index_data.set_index('date')[['p_change', 'p_change_turtle']].resample('A').apply(lambda x: ((x/100+1.0).prod() - 1.0) * 100)
     year_rtn.to_csv(codedir+'tuetle_year.csv', encoding='gbk')
     index_data.tail(20).to_csv(codedir+'turtle_Signal.csv', index=False, encoding='gbk')
+    return
+
+def OLSV2A(code):
+    df=get_h_csv(code)
+    df.index=pd.to_datetime(df.index)
+    df=df.drop_duplicates(keep=False)
+    print ('Caculating the analysing 1/4 statistics:')
+    print (df.describe(),'\n')
+    
+    if code[0]=='6' or code[0]=='9':
+        ticker='000001'
+    else:
+        ticker='399001'
+    dfi=get_h_csv(ticker,True)
+    dfi.index=pd.to_datetime(dfi.index)
+
+    df['cpct']=df['close'].pct_change()
+    df['vpct']=df['volume'].pct_change()
+    dfi['indpct']=dfi['close'].pct_change()
+
+    rets=pd.concat([df['cpct'],dfi['indpct'],df['vpct']],axis=1)
+    rets=rets.dropna(how='any')
+
+    X=np.array(rets.ix[:,1:3])
+    X=sm.add_constant(X)
+
+    Y=np.array(rets.ix[:,0])
+    model=sm.OLS(Y,X)
+    results=model.fit()
+    print (results.summary())
+    
+    print ("The params for the model:",results.params)
+    print ("The std for the model:",results.bse)
+    return results
+def OLSV2_HA(code):
+    """
+    code is 6 strings or 4 strings
+    conclude the share listed in mainland and hongkong exchange
+    """
+    if len(code)==6:
+        if (code[0]=='6')|(code[0]=='9'):
+            code='SS_'+code
+            _get_index_data('000001')
+            index1='SS_000001'
+        else:
+            code='SZ_'+code
+            _get_index_data('399001')
+            index1='SZ_399001'
+    elif len(code)==4:
+        code='HK_'+code
+        index1='HK_HSI'
+    else:
+        print('Input Wrong code.')
+
+    pre_code='YAHOO/'
+    ticker=pre_code+code
+    index1=pre_code+index1
+
+    fn='./Quandl/'+ticker+'.csv'
+    ind='./Quandl/'+index1+'.csv'
+
+    df=pd.read_csv(fn,parse_dates=True,index_col=0)
+    dff1=df[['Open','High','Low','Close','Volume','Adjusted Close']].copy()
+    print ('Caculating the analysing 1/4 statistics:')
+    print (dff1.describe(),'\n')
+    dfi=pd.read_csv(ind,parse_dates=True,index_col=0)
+    df['cpct']=df['Close'].pct_change()
+    df['vpct']=df['Volume'].pct_change()
+    dfi['indpct']=dfi['Close'].pct_change()
+
+    rets=pd.concat([df['cpct'],dfi['indpct'],df['vpct']],axis=1)
+    rets=rets.dropna(how='any')
+    #print (rets)
+
+    X=np.array(rets.ix[:,1:3])
+    X=sm.add_constant(X)
+    #print(X)
+
+    Y=np.array(rets.ix[:,0])
+
+
+    #y=np.dot(X,beta)+e
+    model=sm.OLS(Y,X)
+    results=model.fit()
+    print (results.summary())
+    
+    print ("The params for the model:",results.params)
+    print ("The std for the model:",results.bse)
+    return results
+def _get_index_data(code):
+    """
+    code only in ['000001','399001']
+    """
+    if code[0]=='0':
+        ticker="YAHOO/SS_"+code
+    else:
+        ticker='YAHOO/SZ_'+code
+    fn='./Quandl/'+ticker+'.csv'
+    if not os.path.exists(fn):
+        print ('\nDownloading the data %s:'%code)
+        df= wt.get_h_data(code,index=True,start='2000-01-01', end=today1)
+        df.sort_index(ascending=True,inplace=True)
+        df.rename(columns={'open':'Open','close':'Close','low':'Low','high':'High','volume':'Volume','amount':'Amount','date':'Date'},inplace=True)
+        df.to_csv(fn)
+    else:
+        dftem=pd.read_csv(fn)
+        tem=dftem.iloc[-1]['Date']
+        if tem < bftoday:
+            print ('\nUpdating data from %s for %s:'%(tem,code))
+            t=time.strptime(tem,"%Y-%m-%d")
+            y,m,d = t[0:3]
+            tt=datetime.datetime(y,m,d)
+            bd=tt+datetime.timedelta(days=1)
+            if bd.weekday()==5:
+                bd = bd+datetime.timedelta(days=2)
+                print ('It is Sat')
+            #elif bd.weekday()==6:
+            #    bd = bd+datetime.timedelta(days=2)
+            #    print 'It is Sun'
+            bday=bd.strftime('%Y-%m-%d')
+            all_data1 = pd.DataFrame()
+            all_data = wt.get_h_data(code,autype=None,start=bday, end=today)
+            all_data1 = all_data1.append(all_data)
+            if all_data1.empty==False:
+                print (all_data1.head(1))
+                all_data1.sort_index(ascending=True,inplace=True)
+                all_data1.to_csv(fn, header=None, mode='a')
     return
