@@ -503,3 +503,219 @@ def comp2indu(code):
     names=['Item','T_V','N_A','N_P','PE','PB','Gross','N_PR','ROE']
     df.columns=names
     return df
+
+def get_cashflow_emnow():
+    """
+    Parameters:
+    ----------------------------
+    return:
+          DataFrame:
+              code:     股票代码,
+              name：    股票名称
+              price：   最新价格
+              change：  涨跌幅度
+              zl_netin：主力净流入净额（万元）
+              pc_zl：   主力净流入净占比（%）
+              sp_netin：超大单净流入净额（万元）
+              pc_sp：   超大单净流入净占比（%）
+              b_netin： 大单净流入净额（万元
+              pc_b：    大单净流入净占比（%）
+              m_netin： 中单净流入净额（万元）
+              pc_m：    中单净流入净占比（%）
+              sm_netin：小单净流入净额（万元）',
+              pc_sm：   小单净流入净占比（%）
+              date：    获取数据时间
+    """
+    url='http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx/JS.aspx?type=ct&st=(BalFlowMain)&sr=-1&p=1&ps=500000&js=var%20xdBNZpGl={pages:(pc),date:%222014-10-22%22,data:[(x)]}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA&rt=49167709'
+    r=requests.get(url)
+    r=r.text
+    r=r.split('data:[')[1]
+    r=r.replace('"]}','')
+    r=r.replace('",','\n')
+    r=r.replace('"','')
+    r=r.replace('-,',',')
+    df=pd.read_csv(StringIO(r),header=None)
+    df=df.drop(0,axis=1)
+    df.columns=['code','name','price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm','date']
+    df.code=df.code.map(lambda x:str(x).zfill(6))
+    df=df.set_index('code')
+    for label in ['price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm']:
+        df[label]=df[label].astype(float)
+    return df
+
+def get_cashflow_em3days():
+    """
+    Parameters:
+    ----------------------------
+    return:
+          DataFrame:
+              code:     股票代码,
+              name：    股票名称
+              price：   最新价格
+              change：  涨跌幅度
+              zl_netin：主力净流入净额（万元）
+              pc_zl：   主力净流入净占比（%）
+              sp_netin：超大单净流入净额（万元）
+              pc_sp：   超大单净流入净占比（%）
+              b_netin： 大单净流入净额（万元
+              pc_b：    大单净流入净占比（%）
+              m_netin： 中单净流入净额（万元）
+              pc_m：    中单净流入净占比（%）
+              sm_netin：小单净流入净额（万元）',
+              pc_sm：   小单净流入净占比（%）
+              date：    获取数据时间
+    """
+    url='http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx/JS.aspx?type=ct&st=(BalFlowMainNet3)&sr=-1&p=1&ps=50000&js=var%20JbHilIth={pages:(pc),date:%222014-10-22%22,data:[(x)]}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA3&rt=49167722'
+    r=requests.get(url)
+    r=r.text
+    r=r.split('data:[')[1]
+    r=r.replace('"]}','')
+    r=r.replace('",','\n')
+    r=r.replace('"','')
+    r=r.replace('-,',',')
+    df=pd.read_csv(StringIO(r),header=None)
+    df=df.drop(0,axis=1)
+    df.columns=['code','name','price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm','date']
+    df.code=df.code.map(lambda x:str(x).zfill(6))
+    df=df.set_index('code')
+    for label in ['price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm']:
+        df[label]=df[label].astype(float)
+    return df
+
+def get_cashflow_em5days():
+    """
+    Parameters:
+    ----------------------------
+    return:
+          DataFrame:
+              code:     股票代码,
+              name：    股票名称
+              price：   最新价格
+              change：  涨跌幅度
+              zl_netin：主力净流入净额（万元）
+              pc_zl：   主力净流入净占比（%）
+              sp_netin：超大单净流入净额（万元）
+              pc_sp：   超大单净流入净占比（%）
+              b_netin： 大单净流入净额（万元
+              pc_b：    大单净流入净占比（%）
+              m_netin： 中单净流入净额（万元）
+              pc_m：    中单净流入净占比（%）
+              sm_netin：小单净流入净额（万元）',
+              pc_sm：   小单净流入净占比（%）
+              date：    获取数据时间
+    """
+    url='http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx/JS.aspx?type=ct&st=(BalFlowMainNet5)&sr=-1&p=1&ps=50000&js=var%20NHMvtYjS={pages:(pc),date:%222014-10-22%22,data:[(x)]}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA5&rt=49167724'
+    r=requests.get(url)
+    r=r.text
+    r=r.split('data:[')[1]
+    r=r.replace('"]}','')
+    r=r.replace('",','\n')
+    r=r.replace('"','')
+    r=r.replace('-,',',')
+    df=pd.read_csv(StringIO(r),header=None)
+
+    df=df.drop(0,axis=1)
+    df.columns=['code','name','price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm','date']
+    df.code=df.code.map(lambda x:str(x).zfill(6))
+    df=df.set_index('code')
+    for label in ['price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm']:
+        df[label]=df[label].astype(float)
+    return df
+
+def get_cashflow_em10days():
+    """
+    Parameters:
+    ----------------------------
+    return:
+          DataFrame:
+              code:     股票代码,
+              name：    股票名称
+              price：   最新价格
+              change：  涨跌幅度
+              zl_netin：主力净流入净额（万元）
+              pc_zl：   主力净流入净占比（%）
+              sp_netin：超大单净流入净额（万元）
+              pc_sp：   超大单净流入净占比（%）
+              b_netin： 大单净流入净额（万元
+              pc_b：    大单净流入净占比（%）
+              m_netin： 中单净流入净额（万元）
+              pc_m：    中单净流入净占比（%）
+              sm_netin：小单净流入净额（万元）',
+              pc_sm：   小单净流入净占比（%）
+              date：    获取数据时间
+    """
+    url='http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx/JS.aspx?type=ct&st=(BalFlowMainNet10)&sr=-1&p=1&ps=50000&js=var%20oeyEkNty={pages:(pc),date:%222014-10-22%22,data:[(x)]}&token=894050c76af8597a853f5b408b759f5d&cmd=C._AB&sty=DCFFITA10&rt=49167726'
+    r=requests.get(url)
+    r=r.text
+    r=r.split('data:[')[1]
+    r=r.replace('"]}','')
+    r=r.replace('",','\n')
+    r=r.replace('"','')
+    r=r.replace('-,',',')
+    df=pd.read_csv(StringIO(r),header=None)
+    df=df.drop(0,axis=1)
+    df.columns=['code','name','price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm','date']
+    df.code=df.code.map(lambda x:str(x).zfill(6))
+    df=df.set_index('code')
+    for label in ['price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm']:
+        df[label]=df[label].astype(float)
+    return df
+
+def get_cashflow_emshare(code):
+    """
+    Parameters:
+          code: 股票代码,like 600422
+    ----------------------------
+    return:
+          DataFrame:
+              code:     股票代码,
+              name：    股票名称
+              price：   最新价格
+              change：  涨跌幅度
+              zl_netin：主力净流入净额（万元）
+              pc_zl：   主力净流入净占比（%）
+              sp_netin：超大单净流入净额（万元）
+              pc_sp：   超大单净流入净占比（%）
+              b_netin： 大单净流入净额（万元
+              pc_b：    大单净流入净占比（%）
+              m_netin： 中单净流入净额（万元）
+              pc_m：    中单净流入净占比（%）
+              sm_netin：小单净流入净额（万元）',
+              pc_sm：   小单净流入净占比（%）
+              date：    获取数据时间
+    """
+    url='http://data.eastmoney.com/zjlx/%s.html'%code
+    r=requests.get(url)
+    r=r.content.decode('gb2312')
+    html = lxml.html.parse(StringIO(r))
+    res = html.xpath("//table[@id='dt_1']/tbody/tr")
+    if PY3:
+        sarr = [etree.tostring(node).decode('utf-8') for node in res]
+    else:
+        sarr = [etree.tostring(node) for node in res]
+    sarr = ''.join(sarr)
+    sarr = '<table>%s</table>'%sarr
+    df = pd.read_html(sarr)[0]
+    df.columns=['date','price','change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm']
+    df=df.set_index('date')
+    for label in    ['change','zl_netin','pc_zl','sp_netin','pc_sp','b_netin','pc_b','m_netin','pc_m','sm_netin','pc_sm']:
+        #for label in ['zl_netin','sp_netin','b_netin','m_netin','sm_netin']:
+        df[label]=df[label].map(lambda x: _str2fl(x))
+    return df
+
+def _str2fl(x):
+    if '万' in x:
+        x=x.replace('万','')
+        x=float(x)
+    elif '亿' in x:
+        x=x.replace('亿','')
+        x=float(x)*10000
+    elif '%' in x:
+        x=x.replace('%','')
+        x=float(x)
+    elif '千' in x:
+        x=x.replace('千','')
+        x=float(x)/10
+    elif x.strip()=='-':
+        x=x.replace('-','')
+    return x
