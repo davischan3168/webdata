@@ -170,10 +170,26 @@ def get_finance_index_year(code):
         print(e)
 
 def get_cashflow_thsnow():
+    """
+    Parameters:
+    ---------------------------------
+    return:
+          DataFrame:
+             code:      股票代码
+             name：     股票名称
+             close：    最新价格（元）
+             p_change： 涨跌幅%
+             turnover： 换手率
+             inamount： 流入金额（万元）
+             outamount：流出金额（万元）
+             netamount：现金净流入额（万元）
+             t_amount： 成交金额（万元）
+             big_inamount：大胆流入额（万元）
+    """    
     _write_head()
     dataArr=pd.DataFrame()
-    try:
-        for i in range(1,55,1):
+    for i in range(1,55,1):
+        try:
             _write_console()
             url="http://data.10jqka.com.cn/funds/ggzjl/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
             send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -204,19 +220,31 @@ def get_cashflow_thsnow():
             df = df.drop(0, axis=1)
             df.columns = REPORT_cash
             dataArr = dataArr.append(df, ignore_index=True)
-            time.sleep(0.01)
-        if dataArr is not None:
-            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
-            dataArr=dataArr.set_index('code')
-        return dataArr
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
+    dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+    dataArr=dataArr.set_index('code')
+    for label in ['p_change','turnover','inamount','outamount','netamount','t_amount','big_inamount']:
+        dataArr[label]=dataArr[label].map(lambda x: _str2fl(x))
+    return dataArr
 
 def get_cashflow_ths3days():
+    """
+    Parameters:
+    ---------------------------------
+    return:
+          DataFrame:    
+             code:              股票代码
+             name:              股票名称
+             price:             最新价
+             percent_period:    阶段涨跌幅%
+             turn_over:         连续换手率%
+             net_income:        资金流入净额(万元)
+    """    
     _write_head()
     dataArr=pd.DataFrame()
-    try:
-        for i in range(1,55,1):
+    for i in range(1,55,1):
+        try:
             _write_console()
             url="http://data.10jqka.com.cn/funds/ggzjl/board/3/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
             send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -241,21 +269,33 @@ def get_cashflow_ths3days():
             sarr = '<table>%s</table>'%sarr
             df = pd.read_html(sarr)[0]
             df = df.drop(0, axis=1)
-            time.sleep(0.01)
-        if dataArr is not None:
             df.columns = ['code','name','price','percent_period','turn_over','net_income']
             dataArr = dataArr.append(df, ignore_index=True)
-            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
-            dataArr=dataArr.set_index('code')
-        return dataArr
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
+    dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+    dataArr=dataArr.set_index('code')
+    for label in ['percent_period','turn_over','net_income']:
+        dataArr[label]=dataArr[label].map(lambda x: _str2fl(x))
+    return dataArr
 
 def get_cashflow_ths5days():
+    """
+    Parameters:
+    ---------------------------------
+    return:
+          DataFrame:    
+             code:              股票代码
+             name:              股票名称
+             price:             最新价
+             percent_period:    阶段涨跌幅%
+             turn_over:         连续换手率%
+             net_income:        资金流入净额(万元)
+    """    
     _write_head()
     dataArr=pd.DataFrame()
-    try:
-        for i in range(1,55,1):
+    for i in range(1,55,1):
+        try:
             _write_console()
             url="http://data.10jqka.com.cn/funds/ggzjl/board/5/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
             send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -280,21 +320,33 @@ def get_cashflow_ths5days():
             sarr = '<table>%s</table>'%sarr
             df = pd.read_html(sarr)[0]
             df = df.drop(0, axis=1)
-            time.sleep(0.01)
-        if dataArr is not None:
             df.columns = ['code','name','price','percent_period','turn_over','net_income']
             dataArr = dataArr.append(df, ignore_index=True)
-            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
-            dataArr=dataArr.set_index('code')
-        return dataArr
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
+    dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+    dataArr=dataArr.set_index('code')
+    for label in ['percent_period','turn_over','net_income']:
+        dataArr[label]=dataArr[label].map(lambda x: _str2fl(x))
+    return dataArr
 
 def get_cashflow_ths10days():
+    """
+    Parameters:
+    ---------------------------------
+    return:
+          DataFrame:    
+             code:              股票代码
+             name:              股票名称
+             price:             最新价
+             percent_period:    阶段涨跌幅%
+             turn_over:         连续换手率%
+             net_income:        资金流入净额(万元)
+    """    
     _write_head()
     dataArr=pd.DataFrame()
-    try:
-        for i in range(1,55,1):
+    for i in range(1,55,1):
+        try:
             _write_console()
             url="http://data.10jqka.com.cn/funds/ggzjl/board/10/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
             send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -319,21 +371,33 @@ def get_cashflow_ths10days():
             sarr = '<table>%s</table>'%sarr
             df = pd.read_html(sarr)[0]
             df = df.drop(0, axis=1)
-            time.sleep(0.01)
-        if dataArr is not None:
             df.columns = ['code','name','price','percent_period','turn_over','net_income']
             dataArr = dataArr.append(df, ignore_index=True)
-            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
-            dataArr=dataArr.set_index('code')
-        return dataArr
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
+    dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+    dataArr=dataArr.set_index('code')
+    for label in ['percent_period','turn_over','net_income']:
+        dataArr[label]=dataArr[label].map(lambda x: _str2fl(x))
+    return dataArr
 
 def get_cashflow_ths20days():
+    """
+    Parameters:
+    ---------------------------------
+    return:
+          DataFrame:    
+             code:              股票代码
+             name:              股票名称
+             price:             最新价
+             percent_period:    阶段涨跌幅%
+             turn_over:         连续换手率%
+             net_income:        资金流入净额(万元)
+    """    
     _write_head()
     dataArr=pd.DataFrame()
-    try:
-        for i in range(1,55,1):
+    for i in range(1,55,1):
+        try:
             _write_console()
             url="http://data.10jqka.com.cn/funds/ggzjl/board/20/field/zdf/order/desc/page/{0}/ajax/1/".format(i)
             send_headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -358,16 +422,16 @@ def get_cashflow_ths20days():
             sarr = '<table>%s</table>'%sarr
             df = pd.read_html(sarr)[0]
             df = df.drop(0, axis=1)
-            time.sleep(0.01)
-        if dataArr is not None:
             df.columns = ['code','name','price','percent_period','turn_over','net_income']
             dataArr = dataArr.append(df, ignore_index=True)
-            dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
-            dataArr=dataArr.set_index('code')
-        return dataArr
-    except Exception as e:
-        print(e)
-        
+        except Exception as e:
+            print(e)
+    dataArr['code'] = dataArr['code'].map(lambda x:str(x).zfill(6))
+    dataArr=dataArr.set_index('code')
+    for label in ['percent_period','turn_over','net_income']:
+        dataArr[label]=dataArr[label].map(lambda x: _str2fl(x))
+    return dataArr
+            
 def _filter_hk_data(r):
     r=r.text
     r=r.split('"report":',1)[1]
@@ -430,3 +494,22 @@ def get_hk_financial_year(code):
         return dfy
     except Exception as e:
         print(e)
+
+def _str2fl(x):
+    if '万' in x:
+        x=x.strip().replace('万','')
+        x=float(x)
+    elif '亿' in x:
+        x=x.strip().replace('亿','')
+        x=float(x)*10000
+    elif '%' in x:
+        x=x.strip().replace('%','')
+        x=float(x)
+    elif '千' in x:
+        x=x.strip().replace('千','')
+        x=float(x)/10
+    elif x.strip()=='-':
+        x=x.strip().replace('-','')
+    else:
+        pass
+    return x
