@@ -9,7 +9,7 @@ Created on 2015/08/24
 
 import pandas as pd
 import os
-from tushare.stock import cons as ct
+from webdata.stock import cons as ct
 
 BK = 'bk'
 

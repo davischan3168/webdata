@@ -14,8 +14,8 @@ import json
 import re
 import pandas as pd
 import numpy as np
-from tushare.fund import cons as ct
-from tushare.util import dateu as du
+from webdata.fund import cons as ct
+from webdata.util import dateu as du
 try:
     from urllib.request import urlopen, Request
 except ImportError:

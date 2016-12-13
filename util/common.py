@@ -12,8 +12,8 @@ try:
 except ImportError:
     from http.client import HTTPSConnection
 import urllib
-from tushare.util import vars as vs
-from tushare.stock import cons as ct
+from webdata.util import vars as vs
+from webdata.stock import cons as ct
 
 class Client:
     httpClient = None

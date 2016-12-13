@@ -15,6 +15,7 @@ for (pf,dirs,files) in os.walk(pf):
         old=old.strip()
         tem=old.replace('[','〔')
         new=tem.replace(']',' 〕')
+        new=new.replace(' ','_')
         os.rename(pf+'/'+old,pf+'/'+new)
         print (old,new)
         #"""

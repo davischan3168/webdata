@@ -12,9 +12,9 @@ import pandas as pd
 import requests
 import time
 from threading import Thread
-from tushare.trader import vars as vs
-from tushare.trader import utils
-from tushare.util import upass as up
+from webdata.trader import vars as vs
+from webdata.trader import utils
+from webdata.util import upass as up
 
 
 class TraderAPI(object):

@@ -11,7 +11,7 @@ Created on 2016/10/01
 import json
 import six
 import pandas as pd
-from tushare.futures import cons as ct
+from webdata.futures import cons as ct
 
 try:
     from urllib.request import urlopen, Request
